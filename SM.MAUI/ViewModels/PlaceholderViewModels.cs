@@ -1,0 +1,6 @@
+﻿namespace SM.MAUI.ViewModels
+{
+   
+
+  
+}

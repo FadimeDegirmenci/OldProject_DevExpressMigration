@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SM.MAUI.Views.AddProductPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Urun Ekle">
+
+    <ScrollView>
+        <Grid Padding="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Frame Grid.Row="0" 
+                   BackgroundColor="#2E86AB" 
+                   CornerRadius="10"
+                   Margin="0,0,0,20"
+                   Padding="20">
+                <Label Text="Yeni Ürün Ekle"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center" />
+            </Frame>
+
+            <!-- Form -->
+            <StackLayout Grid.Row="1" Spacing="20">
+
+                <!-- Urun Adi -->
+                <StackLayout>
+                    <Label Text="Urun Adi *" FontAttributes="Bold" TextColor="#495057" />
+                    <Entry Text="{Binding ProductName}" 
+                           Placeholder="Ürün Adını Girin"
+                           BackgroundColor="White"
+                           TextColor="#212529" />
+                </StackLayout>
+
+                <!-- SKU -->
+                <StackLayout>
+                    <Label Text="SKU *" FontAttributes="Bold" TextColor="#495057" />
+                    <Entry Text="{Binding SKU}" 
+                           Placeholder="Barkod Kodunu Girin (ornek: PRD001)"
+                           BackgroundColor="White"
+                           TextColor="#212529" />
+                </StackLayout>
+
+                <!-- Fiyat -->
+                <StackLayout>
+                    <Label Text="Fiyat *" FontAttributes="Bold" TextColor="#495057" />
+                    <Entry Text="{Binding Price}" 
+                           Placeholder="Fiyat girin (ornek: 100,50)"
+                           Keyboard="Numeric"
+                           BackgroundColor="White"
+                           TextColor="#212529" />
+                </StackLayout>
+
+                <!-- Aciklama -->
+                <StackLayout>
+                    <Label Text="Aciklama" FontAttributes="Bold" TextColor="#495057" />
+                    <Editor Text="{Binding Description}" 
+                            Placeholder="Ürün Açıklaması"
+                            HeightRequest="100"
+                            BackgroundColor="White"
+                            TextColor="#212529" />
+                </StackLayout>
+
+                <!-- Error Message -->
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="Red"
+                       FontSize="14"
+                       IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"
+                       HorizontalTextAlignment="Center" />
+
+            </StackLayout>
+
+            <!-- Buttons -->
+            <Grid Grid.Row="2" Margin="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Text="Iptal"
+                        BackgroundColor="#6C757D"
+                        TextColor="White"
+                        CornerRadius="10"
+                        Margin="0,0,10,0"
+                        Command="{Binding CancelCommand}" />
+
+                <Button Grid.Column="1"
+                        Text="Kaydet"
+                        BackgroundColor="#28A745"
+                        TextColor="White"
+                        CornerRadius="10"
+                        Margin="10,0,0,0"
+                        Command="{Binding SaveCommand}"
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" />
+            </Grid>
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator Grid.Row="1"
+                              IsVisible="{Binding IsLoading}"
+                              IsRunning="{Binding IsLoading}"
+                              Color="#2E86AB"
+                              VerticalOptions="Center"
+                              HorizontalOptions="Center" />
+
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

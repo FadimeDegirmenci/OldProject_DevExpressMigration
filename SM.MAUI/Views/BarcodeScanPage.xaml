@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SM.MAUI.Views.BarcodeScanPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+             Title="Barkod Okuyucu"
+             BackgroundColor="Black">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Kamera Görünümü -->
+        <zxing:CameraBarcodeReaderView 
+            Grid.Row="0"
+            x:Name="CameraView"
+            BarcodesDetected="OnBarcodesDetected"
+            IsDetecting="True" />
+
+        <!-- Kontrol Butonları -->
+        <Grid Grid.Row="1" Margin="20" ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Text="💡 Flash"
+                    BackgroundColor="#FFC107"
+                    TextColor="#495057"
+                    CornerRadius="10"
+                    Clicked="OnFlashToggleClicked" />
+
+            <Button Grid.Column="1"
+                    Text="🔄 Tekrar"
+                    BackgroundColor="#17A2B8"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Clicked="OnRetryClicked" />
+
+            <Button Grid.Column="2"
+                    Text="❌ Iptal"
+                    BackgroundColor="#DC3545"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Clicked="OnAcceptClicked" />
+        </Grid>
+
+    </Grid>
+
+</ContentPage>
