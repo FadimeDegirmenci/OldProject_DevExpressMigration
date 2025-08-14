@@ -655,7 +655,18 @@ namespace SM.MAUI.Services
         public int NewQuantity { get; set; }
         public int QuantityChanged { get; set; }
     }
+    // ApiService.cs dosyasındaki WarehouseStockDto sınıfını bu şekilde güncelleyin:
 
+    public class WarehouseStockDto
+    {
+        public string WarehouseName { get; set; } = string.Empty;
+        public int ProductCount { get; set; }
+        public int TotalQuantity { get; set; }
+        public decimal TotalValue { get; set; }
+
+        // ✅ YENİ: Yüzde hesaplaması için eklendi
+        public decimal Percentage { get; set; }
+    }
     public class DashboardSummaryDto
     {
         public int TotalProducts { get; set; }
@@ -673,13 +684,7 @@ namespace SM.MAUI.Services
         public decimal TotalValue { get; set; }
     }
 
-    public class WarehouseStockDto
-    {
-        public string WarehouseName { get; set; } = string.Empty;
-        public int ProductCount { get; set; }
-        public int TotalQuantity { get; set; }
-        public decimal TotalValue { get; set; }
-    }
+  
 
     public class ApiDashboardSummary
     {

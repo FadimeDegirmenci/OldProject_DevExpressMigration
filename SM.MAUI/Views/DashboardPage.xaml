@@ -24,7 +24,6 @@
                BackgroundColor="#2E86AB" 
                CornerRadius="15" 
                Padding="20"
-               HasShadow="True"
                Margin="15,10,15,15">
             <Grid ColumnDefinitions="*,Auto">
                 <StackLayout Grid.Column="0">
@@ -82,8 +81,7 @@
                     <Frame Grid.Row="0" Grid.Column="0"
                            BackgroundColor="#E8F5E8"
                            CornerRadius="15"
-                           Padding="15"
-                           HasShadow="True">
+                           Padding="15">
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToProductsCommand}" />
                         </Frame.GestureRecognizers>
@@ -105,8 +103,7 @@
                     <Frame Grid.Row="0" Grid.Column="1"
                            BackgroundColor="#FFF3CD"
                            CornerRadius="15"
-                           Padding="15"
-                           HasShadow="True">
+                           Padding="15">
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding GoToWarehousesCommand}" />
                         </Frame.GestureRecognizers>
@@ -128,8 +125,7 @@
                     <Frame Grid.Row="1" Grid.Column="0"
                            BackgroundColor="#E3F2FD"
                            CornerRadius="15"
-                           Padding="15"
-                           HasShadow="True">
+                           Padding="15">
                         <StackLayout>
                             <Label Text="📊" FontSize="24" HorizontalOptions="Center" />
                             <Label Text="{Binding TotalStockQuantity}"
@@ -148,8 +144,7 @@
                     <Frame Grid.Row="1" Grid.Column="1"
                            BackgroundColor="#FCE4EC"
                            CornerRadius="15"
-                           Padding="15"
-                           HasShadow="True">
+                           Padding="15">
                         <StackLayout>
                             <Label Text="💰" FontSize="24" HorizontalOptions="Center" />
                             <Label Text="{Binding TotalStockValue, StringFormat='{0:F0} TL'}"
@@ -157,7 +152,7 @@
                                    FontAttributes="Bold"
                                    TextColor="#AD1457"
                                    HorizontalOptions="Center" />
-                            <Label Text="Toplam Deger"
+                            <Label Text="Toplam Değer"
                                    FontSize="12"
                                    TextColor="#AD1457"
                                    HorizontalOptions="Center" />
@@ -168,8 +163,7 @@
                 <!-- Depo Stok Dağılımı Grafik -->
                 <Frame BackgroundColor="White"
                        CornerRadius="15"
-                       Padding="20"
-                       HasShadow="True">
+                       Padding="20">
                     <StackLayout>
                         <Grid ColumnDefinitions="Auto,*">
                             <Label Grid.Column="0" Text="📊" FontSize="20" VerticalOptions="Center" />
@@ -181,6 +175,13 @@
                                    Margin="10,0,0,0" />
                         </Grid>
 
+                        <!-- Grafik açıklaması -->
+                        <Label Text="Depoların toplam stok değerlerine göre yüzdelik dağılımı"
+                               FontSize="13"
+                               TextColor="#6C757D"
+                               Margin="0,5,0,15"
+                               HorizontalOptions="Center" />
+
                         <chart:SfCircularChart HeightRequest="250" Margin="0,10,0,0">
                             <chart:SfCircularChart.Series>
                                 <chart:PieSeries ItemsSource="{Binding WarehouseStocks}"
@@ -189,56 +190,109 @@
                                                ShowDataLabels="True"
                                                LabelContext="Percentage" />
                             </chart:SfCircularChart.Series>
+
+                            <chart:SfCircularChart.Legend>
+                                <chart:ChartLegend IsVisible="True" 
+                                                 Placement="Bottom" />
+                            </chart:SfCircularChart.Legend>
                         </chart:SfCircularChart>
 
-                        <!-- Depo Açıklamaları - Basit Liste -->
-                        <StackLayout Margin="0,15,0,0" Spacing="6">
-                            <Label Text="📋 Depo Detayları:" FontSize="14" FontAttributes="Bold" TextColor="#6C757D" />
+                        <!-- Depo Detayları -->
+                        <StackLayout Margin="0,20,0,0" Spacing="8">
+                            <Label Text="📋 Detaylı Depo Bilgileri:" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E86AB" />
 
-                            <!-- Her depo için liste elemanları -->
+                            <Label Text="Her deponun stok durumu ve toplam değeri"
+                                   FontSize="12"
+                                   TextColor="#6C757D"
+                                   Margin="0,0,0,10" />
+
                             <CollectionView ItemsSource="{Binding WarehouseStocks}" 
                                           BackgroundColor="Transparent">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <Frame BackgroundColor="#F8F9FA" 
-                                               CornerRadius="8" 
-                                               Padding="12,8" 
-                                               Margin="0,2" 
-                                               HasShadow="False">
-                                            <Grid ColumnDefinitions="12,*,Auto">
-                                                <!-- Renkli Nokta -->
-                                                <BoxView Grid.Column="0" 
-                                                         BackgroundColor="#2E86AB" 
-                                                         WidthRequest="12" 
-                                                         HeightRequest="12" 
-                                                         CornerRadius="6" 
-                                                         VerticalOptions="Center" />
+                                               BorderColor="#E9ECEF"
+                                               CornerRadius="12" 
+                                               Padding="15" 
+                                               Margin="0,3">
+                                            <Grid ColumnDefinitions="Auto,*,Auto" 
+                                                  RowDefinitions="Auto,Auto">
 
-                                                <!-- Depo Bilgileri -->
+                                                <!-- Renkli Gösterge -->
+                                                <Frame Grid.Column="0" 
+                                                       Grid.RowSpan="2"
+                                                       BackgroundColor="#2E86AB" 
+                                                       WidthRequest="4" 
+                                                       HeightRequest="40"
+                                                       CornerRadius="2"
+                                                       VerticalOptions="Center"
+                                                       Padding="0"
+                                                       Margin="0,0,15,0" />
+
+                                                <!-- Depo Adı -->
+                                                <Label Grid.Column="1" 
+                                                       Grid.Row="0"
+                                                       Text="{Binding WarehouseName}"
+                                                       FontSize="16"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#2E86AB"
+                                                       VerticalOptions="Start" />
+
+                                                <!-- Stok Miktarı ve Ürün Sayısı -->
                                                 <StackLayout Grid.Column="1" 
-                                                           VerticalOptions="Center" 
-                                                           Margin="12,0,0,0">
-                                                    <Label Text="{Binding WarehouseName}"
-                                                           FontSize="14"
-                                                           FontAttributes="Bold"
-                                                           TextColor="#2E86AB" />
+                                                           Grid.Row="1"
+                                                           Orientation="Horizontal"
+                                                           Spacing="15">
                                                     <Label Text="{Binding TotalQuantity, StringFormat='{0} adet stok'}"
                                                            FontSize="12"
-                                                           TextColor="#6C757D" />
+                                                           TextColor="#000000" />
+                                                    <Label Text="{Binding ProductCount, StringFormat='{0} farklı ürün'}"
+                                                           FontSize="12"
+                                                           TextColor="#000000" />
                                                 </StackLayout>
 
-                                                <!-- Değer -->
-                                                <Label Grid.Column="2"
-                                                       Text="{Binding TotalValue, StringFormat='{0:F0} TL'}"
-                                                       FontSize="14"
-                                                       FontAttributes="Bold"
-                                                       TextColor="#007ACC"
-                                                       VerticalOptions="Center" />
+                                                <!-- Toplam Değer -->
+                                                <StackLayout Grid.Column="2"
+                                                           Grid.RowSpan="2"
+                                                           VerticalOptions="Center"
+                                                           HorizontalOptions="End"
+                                                           Margin="10,0,0,0">
+                                                    <Label Text="{Binding TotalValue, StringFormat='{0:N0} ₺'}"
+                                                           FontSize="16"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#007ACC"
+                                                           HorizontalOptions="End" />
+                                                    <Label Text="toplam değer"
+                                                           FontSize="10"
+                                                           TextColor="#6C757D"
+                                                           HorizontalOptions="End" />
+                                                </StackLayout>
                                             </Grid>
                                         </Frame>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
+
+                            <!-- Özet Bilgi -->
+                            <Frame BackgroundColor="#E8F5E8"
+                                   BorderColor="#C8E6C9"
+                                   CornerRadius="10"
+                                   Padding="15"
+                                   Margin="0,10,0,0">
+                                <StackLayout Orientation="Horizontal" 
+                                           HorizontalOptions="Center"
+                                           Spacing="10">
+                                    <Label Text="💡" FontSize="16" VerticalOptions="Center" />
+                                    <Label Text="Grafikteki yüzdeler toplam stok değerine göre hesaplanmıştır"
+                                           FontSize="12"
+                                           TextColor="#2E7D32"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand" />
+                                </StackLayout>
+                            </Frame>
                         </StackLayout>
                     </StackLayout>
                 </Frame>
@@ -246,8 +300,7 @@
                 <!-- En Çok Stoklu Ürünler Grafik -->
                 <Frame BackgroundColor="White"
                        CornerRadius="15"
-                       Padding="20"
-                       HasShadow="True">
+                       Padding="20">
                     <StackLayout>
                         <Grid ColumnDefinitions="Auto,*">
                             <Label Grid.Column="0" Text="🏆" FontSize="20" VerticalOptions="Center" />
@@ -279,11 +332,10 @@
                     </StackLayout>
                 </Frame>
 
-                <!-- En Az Stoklu Ürünler Uyarısı -->
+                <!-- ✅ DÜZELTİLDİ: Az Stoklu Ürünler Liste Format -->
                 <Frame BackgroundColor="White"
                        CornerRadius="15"
-                       Padding="20"
-                       HasShadow="True">
+                       Padding="20">
                     <StackLayout>
                         <Grid ColumnDefinitions="Auto,*">
                             <Label Grid.Column="0" Text="⚠️" FontSize="20" VerticalOptions="Center" />
@@ -295,65 +347,72 @@
                                    Margin="10,0,0,0" />
                         </Grid>
 
-                        <chart:SfCartesianChart HeightRequest="250" Margin="0,10,0,0">
-                            <chart:SfCartesianChart.XAxes>
-                                <chart:CategoryAxis ShowMajorGridLines="False" />
-                            </chart:SfCartesianChart.XAxes>
+                        <!-- Az Stoklu Ürünlerin Listesi -->
+                        <StackLayout Margin="0,15,0,0" Spacing="8">
+                            <CollectionView ItemsSource="{Binding LowStockProducts}" 
+                                          BackgroundColor="Transparent">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame BackgroundColor="#FFF5F5" 
+                                               BorderColor="#FFCDD2"
+                                               CornerRadius="10" 
+                                               Padding="15" 
+                                               Margin="0,4">
+                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                                <!-- Uyarı Seviyesi -->
+                                                <Label Grid.Column="0" 
+                                                       Text="{Binding WarningLevel}"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#000000"
+                                                       VerticalOptions="Center" />
 
-                            <chart:SfCartesianChart.YAxes>
-                                <chart:NumericalAxis ShowMajorGridLines="True" />
-                            </chart:SfCartesianChart.YAxes>
+                                                <!-- Ürün Bilgileri -->
+                                                <StackLayout Grid.Column="1" 
+                                                           VerticalOptions="Center" 
+                                                           Margin="15,0,0,0">
+                                                    <Label Text="{Binding ProductName}"
+                                                           FontSize="16"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#2E86AB" />
+                                                    <Label Text="{Binding SKU, StringFormat='SKU: {0}'}"
+                                                           FontSize="12"
+                                                           TextColor="#000000" />
+                                                </StackLayout>
 
-                            <chart:SfCartesianChart.Series>
-                                <chart:ColumnSeries ItemsSource="{Binding LowStockProducts}"
-                                                  XBindingPath="ProductName"
-                                                  YBindingPath="TotalQuantity"
-                                                  ShowDataLabels="True"
-                                                  Fill="#FF6B6B" />
-                            </chart:SfCartesianChart.Series>
-                        </chart:SfCartesianChart>
-                    </StackLayout>
-                </Frame>
+                                                <!-- Mevcut Stok -->
+                                                <StackLayout Grid.Column="2"
+                                                           VerticalOptions="Center"
+                                                           HorizontalOptions="End"
+                                                           Margin="0,0,15,0">
+                                                    <Label Text="{Binding CurrentStock}"
+                                                           FontSize="20"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#DC3545"
+                                                           HorizontalOptions="Center" />
+                                                    <Label Text="adet"
+                                                           FontSize="10"
+                                                           TextColor="#000000"
+                                                           HorizontalOptions="Center" />
+                                                </StackLayout>
 
-                <!-- Haftalık Stok Trend Grafiği -->
-                <Frame BackgroundColor="White"
-                       CornerRadius="15"
-                       Padding="20"
-                       HasShadow="True">
-                    <StackLayout>
-                        <Grid ColumnDefinitions="Auto,*">
-                            <Label Grid.Column="0" Text="📈" FontSize="20" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="Son 7 Gün Stok Hareketi"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="#2E86AB"
-                                   VerticalOptions="Center"
-                                   Margin="10,0,0,0" />
-                        </Grid>
-
-                        <chart:SfCartesianChart HeightRequest="250" Margin="0,10,0,0">
-                            <chart:SfCartesianChart.XAxes>
-                                <chart:CategoryAxis ShowMajorGridLines="False" />
-                            </chart:SfCartesianChart.XAxes>
-
-                            <chart:SfCartesianChart.YAxes>
-                                <chart:NumericalAxis ShowMajorGridLines="True" />
-                            </chart:SfCartesianChart.YAxes>
-
-                            <chart:SfCartesianChart.Series>
-                                <chart:LineSeries ItemsSource="{Binding WeeklyTrend}"
-                                                XBindingPath="DayName"
-                                                YBindingPath="StockIn"
-                                                Fill="#4CAF50"
-                                                StrokeWidth="3" />
-
-                                <chart:LineSeries ItemsSource="{Binding WeeklyTrend}"
-                                                XBindingPath="DayName"
-                                                YBindingPath="StockOut"
-                                                Fill="#FF5722"
-                                                StrokeWidth="3" />
-                            </chart:SfCartesianChart.Series>
-                        </chart:SfCartesianChart>
+                                                <!-- Aksiyon Butonu -->
+                                                <Button Grid.Column="3"
+                                                        Text="📦"
+                                                        BackgroundColor="#DC3545"
+                                                        TextColor="White"
+                                                        CornerRadius="15"
+                                                        WidthRequest="35"
+                                                        HeightRequest="35"
+                                                        FontSize="12"
+                                                        VerticalOptions="Center"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.GoToProductsCommand}" />
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
                     </StackLayout>
                 </Frame>
 
@@ -370,8 +429,7 @@
                Padding="20"
                Margin="20"
                IsVisible="{Binding HasError}"
-               VerticalOptions="Center"
-               HasShadow="False">
+               VerticalOptions="Center">
             <StackLayout>
                 <Grid ColumnDefinitions="*,Auto">
                     <Label Grid.Column="0" Text="{Binding ErrorMessage}"
@@ -404,16 +462,15 @@
                BackgroundColor="White"
                CornerRadius="15"
                Padding="15"
-               HasShadow="True"
                IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
             <Grid ColumnDefinitions="*,Auto">
                 <Label Grid.Column="0" Text="💡 Kartlara dokunarak ilgili sayfaya gidebilirsiniz"
                        FontSize="11"
-                       TextColor="#6C757D"
+                       TextColor="#000000"
                        VerticalOptions="Center" />
                 <Label Grid.Column="1" Text="{Binding LastUpdatedText}"
                        FontSize="10"
-                       TextColor="#6C757D"
+                       TextColor="#000000"
                        VerticalOptions="Center" />
             </Grid>
         </Frame>

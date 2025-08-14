@@ -2,287 +2,183 @@
 <ContentPage x:Class="SM.MAUI.Views.EditProductPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:SM.MAUI.Converters"
-             Title="{Binding Title}"
-             BackgroundColor="#F5F5F5">
+             Title="Ürün Düzenle"
+             BackgroundColor="#F0F2F5">
 
-    <ContentPage.Resources>
-        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
-        <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
-    </ContentPage.Resources>
+    <ScrollView>
+        <Grid Padding="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+            <!-- Header -->
+            <Frame Grid.Row="0" 
+                   BackgroundColor="#667EEA" 
+                   CornerRadius="15"
+                   Margin="0,0,0,25"
+                   Padding="25">
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                    <Label Text="✏️" FontSize="28" VerticalOptions="Center" />
+                    <Label Text="Ürün Düzenle"
+                           FontSize="26"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           VerticalOptions="Center"
+                           Margin="10,0,0,0" />
+                </StackLayout>
+            </Frame>
 
-        <!-- Ana Form İçeriği -->
-        <ScrollView Grid.Row="0" Padding="15">
-            <StackLayout Spacing="20">
+            <!-- Ana İçerik -->
+            <StackLayout Grid.Row="1" Spacing="20">
 
-                <!-- Başlık -->
-                <Frame BackgroundColor="#2E86AB" 
-                       CornerRadius="20" 
-                       Padding="20"
-                       HasShadow="True"
-                       Margin="0,10,0,0">
-                    <StackLayout>
-                        <Label Text="✏️ Ürün Bilgilerini Düzenle"
-                               FontSize="20"
-                               FontAttributes="Bold"
-                               TextColor="White"
-                               HorizontalOptions="Center" />
-                        <Label Text="Formu doldurup kaydet butonuna basın."
-                               FontSize="12"
-                               TextColor="#E8F4F8"
-                               HorizontalOptions="Center"
-                               Margin="0,5,0,0" />
-                    </StackLayout>
-                </Frame>
-
-                <!-- Loading -->
-                <ActivityIndicator IsVisible="{Binding IsBusy}"
-                                   IsRunning="{Binding IsBusy}"
-                                   Color="#2E86AB"
-                                   HeightRequest="60"
-                                   WidthRequest="60"
-                                   HorizontalOptions="Center" />
-
-                <!-- Form Kartı -->
-                <Frame BackgroundColor="White"
-                       CornerRadius="15"
-                       Padding="20"
-                       HasShadow="True"
-                       IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+                <!-- Ürün Bilgileri -->
+                <Frame BackgroundColor="White" 
+                       CornerRadius="15" 
+                       Padding="20">
                     <StackLayout Spacing="20">
+                        <Label Text="📝 Ürün Bilgileri" 
+                               FontSize="20" 
+                               FontAttributes="Bold" 
+                               TextColor="#2E3A59" />
 
                         <!-- Ürün Adı -->
-                        <StackLayout>
-                            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,8">
-                                <Label Grid.Column="0" Text="🏷️" FontSize="16" VerticalOptions="Center" />
-                                <Label Grid.Column="1" Text="Ürün Adı" 
-                                       FontSize="16"
-                                       FontAttributes="Bold" 
-                                       TextColor="#2E86AB"
-                                       VerticalOptions="Center"
-                                       Margin="8,0,0,0" />
-                                <Label Grid.Column="2" Text="*" 
-                                       FontSize="16"
-                                       FontAttributes="Bold" 
-                                       TextColor="#DC3545"
-                                       VerticalOptions="Center" />
-                            </Grid>
-                            <Frame BackgroundColor="#F8F9FA" 
-                                   CornerRadius="10" 
-                                   Padding="0" 
-                                   HasShadow="False"
-                                   BorderColor="{Binding NameError, Converter={StaticResource StringToBoolConverter}}">
-                                <Entry x:Name="ProductNameEntry"
-                                       Text="{Binding ProductName}" 
-                                       Placeholder="Ürün adını girin."
-                                       IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                                       BackgroundColor="Transparent"
-                                       TextColor="#212529"
-                                       FontSize="14"
-                                       Margin="15,8" />
-                            </Frame>
+                        <StackLayout Spacing="8">
+                            <Label Text="Ürün Adı *" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59" />
+                            <Entry x:Name="ProductNameEntry"
+                                   Text="{Binding ProductName}" 
+                                   Placeholder="Ürün adını girin"
+                                   BackgroundColor="#F8FAFC"
+                                   TextColor="#2E3A59" />
                             <Label Text="{Binding NameError}"
-                                   TextColor="#DC3545"
+                                   TextColor="Red"
                                    FontSize="12"
-                                   Margin="10,5,0,0"
                                    IsVisible="{Binding NameError, Converter={StaticResource StringToBoolConverter}}" />
                         </StackLayout>
 
                         <!-- SKU -->
-                        <StackLayout>
-                            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,8">
-                                <Label Grid.Column="0" Text="🔖" FontSize="16" VerticalOptions="Center" />
-                                <Label Grid.Column="1" Text="Barkod" 
-                                       FontSize="16"
-                                       FontAttributes="Bold" 
-                                       TextColor="#2E86AB"
-                                       VerticalOptions="Center"
-                                       Margin="8,0,0,0" />
-                                <Label Grid.Column="2" Text="*" 
-                                       FontSize="16"
-                                       FontAttributes="Bold" 
-                                       TextColor="#DC3545"
-                                       VerticalOptions="Center" />
-                            </Grid>
-                            <Frame BackgroundColor="#F8F9FA" 
-                                   CornerRadius="10" 
-                                   Padding="0" 
-                                   HasShadow="False">
-                                <Entry x:Name="ProductSKUEntry"
-                                       Text="{Binding ProductSKU}" 
-                                       Placeholder="Örn: PRD001, LAPTOP123"
-                                       IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                                       BackgroundColor="Transparent"
-                                       TextColor="#212529"
-                                       FontSize="14"
-                                       Margin="15,8" />
-                            </Frame>
+                        <StackLayout Spacing="8">
+                            <Label Text="SKU *" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59" />
+                            <Entry Text="{Binding ProductSKU}" 
+                                   Placeholder="Stok kodu"
+                                   BackgroundColor="#F8FAFC"
+                                   TextColor="#2E3A59" />
                             <Label Text="{Binding SKUError}"
-                                   TextColor="#DC3545"
+                                   TextColor="Red"
                                    FontSize="12"
-                                   Margin="10,5,0,0"
                                    IsVisible="{Binding SKUError, Converter={StaticResource StringToBoolConverter}}" />
                         </StackLayout>
 
                         <!-- Fiyat -->
-                        <StackLayout>
-                            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,8">
-                                <Label Grid.Column="0" Text="💰" FontSize="16" VerticalOptions="Center" />
-                                <Label Grid.Column="1" Text="Fiyat (TL)" 
-                                       FontSize="16"
-                                       FontAttributes="Bold" 
-                                       TextColor="#2E86AB"
-                                       VerticalOptions="Center"
-                                       Margin="8,0,0,0" />
-                                <Label Grid.Column="2" Text="*" 
-                                       FontSize="16"
-                                       FontAttributes="Bold" 
-                                       TextColor="#DC3545"
-                                       VerticalOptions="Center" />
-                            </Grid>
-                            <Frame BackgroundColor="#F8F9FA" 
-                                   CornerRadius="10" 
-                                   Padding="0" 
-                                   HasShadow="False">
-                                <Entry x:Name="ProductPriceEntry"
-                                       Text="{Binding ProductPrice}" 
-                                       Placeholder="0.00"
-                                       Keyboard="Numeric"
-                                       IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                                       BackgroundColor="Transparent"
-                                       TextColor="#212529"
-                                       FontSize="14"
-                                       Margin="15,8" />
-                            </Frame>
+                        <StackLayout Spacing="8">
+                            <Label Text="Fiyat *" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59" />
+                            <Entry Text="{Binding ProductPrice}" 
+                                   Placeholder="Fiyat"
+                                   Keyboard="Numeric"
+                                   BackgroundColor="#F8FAFC"
+                                   TextColor="#2E3A59" />
                             <Label Text="{Binding PriceError}"
-                                   TextColor="#DC3545"
+                                   TextColor="Red"
                                    FontSize="12"
-                                   Margin="10,5,0,0"
                                    IsVisible="{Binding PriceError, Converter={StaticResource StringToBoolConverter}}" />
                         </StackLayout>
 
                         <!-- Açıklama -->
-                        <StackLayout>
-                            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,8">
-                                <Label Grid.Column="0" Text="📝" FontSize="16" VerticalOptions="Center" />
-                                <Label Grid.Column="1" Text="Açıklama" 
-                                       FontSize="16"
-                                       FontAttributes="Bold" 
-                                       TextColor="#2E86AB"
-                                       VerticalOptions="Center"
-                                       Margin="8,0,0,0" />
-                                <Label Grid.Column="2" Text="(isteğe bağlı)" 
-                                       FontSize="12"
-                                       TextColor="#6C757D"
-                                       VerticalOptions="Center" />
-                            </Grid>
-                            <Frame BackgroundColor="#F8F9FA" 
-                                   CornerRadius="10" 
-                                   Padding="0" 
-                                   HasShadow="False">
-                                <Editor x:Name="ProductDescriptionEditor"
-                                        Text="{Binding ProductDescription}" 
-                                        Placeholder="Ürün hakkında detaylı bilgi..."
-                                        HeightRequest="80"
-                                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                                        BackgroundColor="Transparent"
-                                        TextColor="#212529"
-                                        FontSize="14"
-                                        Margin="15,8" />
-                            </Frame>
+                        <StackLayout Spacing="8">
+                            <Label Text="Açıklama" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59" />
+                            <Editor Text="{Binding ProductDescription}" 
+                                    Placeholder="Ürün açıklaması"
+                                    HeightRequest="80"
+                                    BackgroundColor="#F8FAFC"
+                                    TextColor="#2E3A59" />
                         </StackLayout>
                     </StackLayout>
                 </Frame>
 
-                <!-- Hata Mesajı -->
-                <Frame BackgroundColor="#F8D7DA"
-                       BorderColor="#DC3545"
-                       CornerRadius="10"
-                       Padding="15"
-                       IsVisible="{Binding HasError}"
-                       HasShadow="False">
-                    <Grid ColumnDefinitions="Auto,*">
-                        <Label Grid.Column="0" Text="❌" FontSize="18" VerticalOptions="Center" />
-                        <Label Grid.Column="1" Text="{Binding ErrorMessage}"
-                               FontSize="14"
-                               TextColor="#721C24"
+                <!-- Error Message -->
+                <Frame BackgroundColor="#FFEBEE" 
+                       CornerRadius="12" 
+                       Padding="20"
+                       BorderColor="#FFCDD2"
+                       IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}">
+                    <StackLayout Orientation="Horizontal" Spacing="15">
+                        <Label Text="⚠️" 
+                               FontSize="20" 
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="#C62828"
+                               FontSize="15"
+                               FontAttributes="Bold"
                                VerticalOptions="Center"
-                               Margin="10,0,0,0"
-                               LineBreakMode="WordWrap" />
-                    </Grid>
+                               HorizontalOptions="FillAndExpand" />
+                    </StackLayout>
                 </Frame>
 
-                <!-- Bilgi Kutusu -->
-                <Frame BackgroundColor="#E3F2FD"
-                       BorderColor="#2196F3"
-                       CornerRadius="10"
-                       Padding="15"
-                       HasShadow="False">
-                    <Grid ColumnDefinitions="Auto,*">
-                        <Label Grid.Column="0" Text="💡" FontSize="16" VerticalOptions="Center" />
-                        <Label Grid.Column="1" FontSize="12" 
-                               TextColor="#1565C0"
-                               VerticalOptions="Center"
-                               Margin="8,0,0,0"
-                               LineBreakMode="WordWrap">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="* ile işaretli alanlar zorunludur. " FontAttributes="Bold" />
-                                    <Span Text="Barkod benzersiz olmalıdır ve değiştirildiğinde sistem genelinde güncellenir." />
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
-                    </Grid>
-                </Frame>
-
-                <!-- Alt boşluk -->
-                <BoxView HeightRequest="20" BackgroundColor="Transparent" />
             </StackLayout>
-        </ScrollView>
 
-        <!-- Alt Butonlar -->
-        <Frame Grid.Row="1" 
-               BackgroundColor="White" 
-               CornerRadius="15" 
-               Padding="20,15,20,20"
-               HasShadow="True">
-            <Grid ColumnSpacing="15">
+            <!-- Buttons -->
+            <Grid Grid.Row="2" Margin="0,30,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- İptal Butonu -->
                 <Button Grid.Column="0"
                         Text="❌ İptal"
-                        BackgroundColor="#6C757D"
+                        BackgroundColor="#FF6B6B"
                         TextColor="White"
-                        CornerRadius="15"
-                        HeightRequest="50"
-                        FontSize="14"
+                        CornerRadius="25"
+                        HeightRequest="55"
+                        Margin="0,0,10,0"
+                        FontSize="17"
                         FontAttributes="Bold"
-                        Command="{Binding CancelCommand}"
-                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+                        Command="{Binding CancelCommand}" />
 
-                <!-- Kaydet Butonu -->
                 <Button Grid.Column="1"
-                        Text="💾 Değişiklikleri Kaydet"
-                        BackgroundColor="#28A745"
+                        Text="💾 Kaydet"
+                        BackgroundColor="#4ECDC4"
                         TextColor="White"
-                        CornerRadius="15"
-                        HeightRequest="50"
-                        FontSize="14"
+                        CornerRadius="25"
+                        HeightRequest="55"
+                        Margin="10,0,0,0"
+                        FontSize="17"
                         FontAttributes="Bold"
                         Command="{Binding SaveCommand}"
                         IsEnabled="{Binding IsFormValid}" />
             </Grid>
-        </Frame>
-    </Grid>
+
+            <!-- Loading Indicator -->
+            <Frame Grid.Row="1"
+                   BackgroundColor="White"
+                   CornerRadius="20"
+                   IsVisible="{Binding IsLoading}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Padding="40">
+                <StackLayout Spacing="20" HorizontalOptions="Center">
+                    <ActivityIndicator IsVisible="{Binding IsLoading}"
+                                      IsRunning="{Binding IsLoading}"
+                                      Color="#667EEA"
+                                      WidthRequest="50"
+                                      HeightRequest="50" />
+                    <Label Text="İşleniyor..."
+                           TextColor="#2E3A59"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+
+        </Grid>
+    </ScrollView>
 
 </ContentPage>

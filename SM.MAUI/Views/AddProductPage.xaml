@@ -2,7 +2,8 @@
 <ContentPage x:Class="SM.MAUI.Views.AddProductPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             Title="Urun Ekle">
+             Title="Ürün Ekleme Sayfası"
+             BackgroundColor="#F0F2F5">
 
     <ScrollView>
         <Grid Padding="20">
@@ -14,99 +15,264 @@
 
             <!-- Header -->
             <Frame Grid.Row="0" 
-                   BackgroundColor="#2E86AB" 
-                   CornerRadius="10"
-                   Margin="0,0,0,20"
-                   Padding="20">
-                <Label Text="Yeni Ürün Ekle"
-                       FontSize="24"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       HorizontalOptions="Center" />
+                   BackgroundColor="#667EEA" 
+                   CornerRadius="15"
+                   Margin="0,0,0,25"
+                   Padding="25">
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                    <Label Text="📦" FontSize="28" VerticalOptions="Center" />
+                    <Label Text="Yeni Ürün Ekle"
+                           FontSize="26"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           VerticalOptions="Center"
+                           Margin="10,0,0,0" />
+                </StackLayout>
             </Frame>
 
             <!-- Form -->
             <StackLayout Grid.Row="1" Spacing="20">
 
-                <!-- Urun Adi -->
-                <StackLayout>
-                    <Label Text="Urun Adi *" FontAttributes="Bold" TextColor="#495057" />
-                    <Entry Text="{Binding ProductName}" 
-                           Placeholder="Ürün Adını Girin"
-                           BackgroundColor="White"
-                           TextColor="#212529" />
-                </StackLayout>
+                <!-- Ürün Adı -->
+                <Frame BackgroundColor="White" 
+                       CornerRadius="12" 
+                       Padding="20"
+                       BorderColor="#E3F2FD">
+                    <StackLayout Spacing="12">
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="🏷️" FontSize="18" VerticalOptions="Center" />
+                            <Label Text="Ürün Adı *" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   Margin="8,0,0,0" />
+                        </StackLayout>
+                        <Entry Text="{Binding ProductName}" 
+                               Placeholder="Ürün adını girin"
+                               BackgroundColor="#F8FAFC"
+                               TextColor="#2E3A59"
+                               FontSize="15"
+                               HeightRequest="45" />
+                    </StackLayout>
+                </Frame>
 
                 <!-- SKU -->
-                <StackLayout>
-                    <Label Text="SKU *" FontAttributes="Bold" TextColor="#495057" />
-                    <Entry Text="{Binding SKU}" 
-                           Placeholder="Barkod Kodunu Girin (ornek: PRD001)"
-                           BackgroundColor="White"
-                           TextColor="#212529" />
-                </StackLayout>
+                <Frame BackgroundColor="White" 
+                       CornerRadius="12" 
+                       Padding="20"
+                       BorderColor="#FFF3E0">
+                    <StackLayout Spacing="12">
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="📋" FontSize="18" VerticalOptions="Center" />
+                            <Label Text="SKU (Stok Kodu) *" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   Margin="8,0,0,0" />
+                        </StackLayout>
+                        <Entry Text="{Binding SKU}" 
+                               Placeholder="Benzersiz stok kodu"
+                               BackgroundColor="#FFF8F3"
+                               TextColor="#2E3A59"
+                               FontSize="15"
+                               HeightRequest="45" />
+                    </StackLayout>
+                </Frame>
 
                 <!-- Fiyat -->
-                <StackLayout>
-                    <Label Text="Fiyat *" FontAttributes="Bold" TextColor="#495057" />
-                    <Entry Text="{Binding Price}" 
-                           Placeholder="Fiyat girin (ornek: 100,50)"
-                           Keyboard="Numeric"
-                           BackgroundColor="White"
-                           TextColor="#212529" />
-                </StackLayout>
+                <Frame BackgroundColor="White" 
+                       CornerRadius="12" 
+                       Padding="20"
+                       BorderColor="#E8F5E8">
+                    <StackLayout Spacing="12">
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="💰" FontSize="18" VerticalOptions="Center" />
+                            <Label Text="Satış Fiyatı *" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   Margin="8,0,0,0" />
+                        </StackLayout>
+                        <Entry Text="{Binding Price}" 
+                               Placeholder="Fiyat (örn: 25000,50)"
+                               Keyboard="Numeric"
+                               BackgroundColor="#F8FFF8"
+                               TextColor="#2E3A59"
+                               FontSize="15"
+                               HeightRequest="45" />
+                    </StackLayout>
+                </Frame>
 
-                <!-- Aciklama -->
-                <StackLayout>
-                    <Label Text="Aciklama" FontAttributes="Bold" TextColor="#495057" />
-                    <Editor Text="{Binding Description}" 
-                            Placeholder="Ürün Açıklaması"
-                            HeightRequest="100"
-                            BackgroundColor="White"
-                            TextColor="#212529" />
-                </StackLayout>
+                <!-- Depo Seçimi -->
+                <Frame BackgroundColor="White" 
+                       CornerRadius="12" 
+                       Padding="20"
+                       BorderColor="#F3E5F5">
+                    <StackLayout Spacing="12">
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="🏪" FontSize="18" VerticalOptions="Center" />
+                            <Label Text="Depo *" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   Margin="8,0,0,0" />
+                        </StackLayout>
+                        <Picker ItemsSource="{Binding Warehouses}"
+                                ItemDisplayBinding="{Binding DisplayName}"
+                                SelectedItem="{Binding SelectedWarehouse}"
+                                Title="Depo seçin"
+                                BackgroundColor="#FAF5FF"
+                                TextColor="#2E3A59"
+                                FontSize="15"
+                                HeightRequest="45" />
+                    </StackLayout>
+                </Frame>
+
+                <!-- Başlangıç Stok Miktarı -->
+                <Frame BackgroundColor="White" 
+                       CornerRadius="12" 
+                       Padding="20"
+                       BorderColor="#FFF9C4">
+                    <StackLayout Spacing="12">
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="📊" FontSize="18" VerticalOptions="Center" />
+                            <Label Text="Başlangıç Stok Miktarı" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   Margin="8,0,0,0" />
+                        </StackLayout>
+                        <Entry Text="{Binding InitialStock}" 
+                               Placeholder="Başlangıç stok (opsiyonel)"
+                               Keyboard="Numeric"
+                               BackgroundColor="#FFFEF7"
+                               TextColor="#2E3A59"
+                               FontSize="15"
+                               HeightRequest="45" />
+                    </StackLayout>
+                </Frame>
+
+                <!-- Açıklama -->
+                <Frame BackgroundColor="White" 
+                       CornerRadius="12" 
+                       Padding="20"
+                       BorderColor="#E1F5FE">
+                    <StackLayout Spacing="12">
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="📝" FontSize="18" VerticalOptions="Center" />
+                            <Label Text="Ürün Açıklaması" 
+                                   FontAttributes="Bold" 
+                                   TextColor="#2E3A59"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   Margin="8,0,0,0" />
+                        </StackLayout>
+                        <Editor Text="{Binding Description}" 
+                                Placeholder="Ürün hakkında açıklama..."
+                                HeightRequest="100"
+                                BackgroundColor="#F0FDFF"
+                                TextColor="#2E3A59"
+                                FontSize="15" />
+                    </StackLayout>
+                </Frame>
 
                 <!-- Error Message -->
-                <Label Text="{Binding ErrorMessage}"
-                       TextColor="Red"
-                       FontSize="14"
-                       IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"
-                       HorizontalTextAlignment="Center" />
+                <Frame BackgroundColor="#FFEBEE" 
+                       CornerRadius="12" 
+                       Padding="20"
+                       BorderColor="#FFCDD2"
+                       IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}">
+                    <StackLayout Orientation="Horizontal" Spacing="15">
+                        <Label Text="⚠️" 
+                               FontSize="20" 
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="#C62828"
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Fill" />
+                    </StackLayout>
+                </Frame>
+
+                <!-- Success Message -->
+                <Frame BackgroundColor="#E8F5E8" 
+                       CornerRadius="12" 
+                       Padding="20"
+                       BorderColor="#C8E6C9"
+                       IsVisible="{Binding SuccessMessage, Converter={StaticResource StringToBoolConverter}}">
+                    <StackLayout Orientation="Horizontal" Spacing="15">
+                        <Label Text="✅" 
+                               FontSize="20" 
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding SuccessMessage}"
+                               TextColor="#2E7D32"
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Fill" />
+                    </StackLayout>
+                </Frame>
 
             </StackLayout>
 
             <!-- Buttons -->
-            <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid Grid.Row="2" Margin="0,30,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Column="0"
-                        Text="Iptal"
-                        BackgroundColor="#6C757D"
+                        Text="❌ İptal"
+                        BackgroundColor="#FF6B6B"
                         TextColor="White"
-                        CornerRadius="10"
+                        CornerRadius="25"
+                        HeightRequest="55"
                         Margin="0,0,10,0"
+                        FontSize="17"
+                        FontAttributes="Bold"
                         Command="{Binding CancelCommand}" />
 
                 <Button Grid.Column="1"
-                        Text="Kaydet"
-                        BackgroundColor="#28A745"
+                        Text="💾 Kaydet"
+                        BackgroundColor="#4ECDC4"
                         TextColor="White"
-                        CornerRadius="10"
+                        CornerRadius="25"
+                        HeightRequest="55"
                         Margin="10,0,0,0"
+                        FontSize="17"
+                        FontAttributes="Bold"
                         Command="{Binding SaveCommand}"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" />
             </Grid>
 
             <!-- Loading Indicator -->
-            <ActivityIndicator Grid.Row="1"
-                              IsVisible="{Binding IsLoading}"
-                              IsRunning="{Binding IsLoading}"
-                              Color="#2E86AB"
-                              VerticalOptions="Center"
-                              HorizontalOptions="Center" />
+            <Frame Grid.Row="1"
+                   BackgroundColor="White"
+                   CornerRadius="20"
+                   IsVisible="{Binding IsLoading}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Padding="40">
+                <StackLayout Spacing="20" HorizontalOptions="Center">
+                    <ActivityIndicator IsVisible="{Binding IsLoading}"
+                                      IsRunning="{Binding IsLoading}"
+                                      Color="#667EEA"
+                                      WidthRequest="50"
+                                      HeightRequest="50" />
+                    <Label Text="Ürün kaydediliyor..."
+                           TextColor="#2E3A59"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
 
         </Grid>
     </ScrollView>

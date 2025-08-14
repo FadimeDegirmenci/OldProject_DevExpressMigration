@@ -1,15 +1,24 @@
 using SM.MAUI.ViewModels;
 
-namespace SM.MAUI.Views;
-
-public partial class AddProductPage : ContentPage
+namespace SM.MAUI.Views
 {
-    private readonly AddProductViewModel _viewModel;
-
-    public AddProductPage(AddProductViewModel viewModel)
+    public partial class AddProductPage : ContentPage
     {
-        InitializeComponent();
-        _viewModel = viewModel;
-        BindingContext = _viewModel;
+        private readonly AddProductViewModel _viewModel;
+
+        public AddProductPage(AddProductViewModel viewModel)
+        {
+            InitializeComponent();
+            _viewModel = viewModel;
+            BindingContext = _viewModel;
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // ViewModel'deki LoadWarehouses metodu constructor'da çaðrýlýyor
+            // Eðer tekrar yüklemek isterseniz burada çaðýrabilirsiniz
+        }
     }
 }

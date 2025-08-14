@@ -1,4 +1,5 @@
 ﻿using SM.MAUI.Services;
+using SM.Core.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -52,20 +53,12 @@ namespace SM.MAUI.ViewModels
             set => SetProperty(ref _warehouseStocks, value);
         }
 
-        // ✅ YENİ: En az stoklu ürünler için
-        private ObservableCollection<TopProductDto> _lowStockProducts = new();
-        public ObservableCollection<TopProductDto> LowStockProducts
+        // ✅ Gerçek az stoklu ürünler için
+        private ObservableCollection<LowStockProductDto> _lowStockProducts = new();
+        public ObservableCollection<LowStockProductDto> LowStockProducts
         {
             get => _lowStockProducts;
             set => SetProperty(ref _lowStockProducts, value);
-        }
-
-        // ✅ YENİ: Haftalık trend için
-        private ObservableCollection<TrendDataDto> _weeklyTrend = new();
-        public ObservableCollection<TrendDataDto> WeeklyTrend
-        {
-            get => _weeklyTrend;
-            set => SetProperty(ref _weeklyTrend, value);
         }
 
         private DateTime _lastUpdated;
@@ -95,7 +88,7 @@ namespace SM.MAUI.ViewModels
         public DashboardViewModel(ApiService apiService)
         {
             _apiService = apiService;
-            Title = "Dashboard - Genel Bakis";
+            Title = "Dashboard - Genel Bakış";
 
             RefreshCommand = new Command(async () => await LoadDashboardData());
             GoToProductsCommand = new Command(async () => await GoToProducts());
@@ -132,11 +125,8 @@ namespace SM.MAUI.ViewModels
                         WarehouseStocks.Add(warehouse);
                     }
 
-                    // ✅ YENİ: En az stoklu ürünleri yükle (demo veri)
+                    // ✅ Gerçek az stoklu ürünleri yükle
                     await LoadLowStockProducts();
-
-                    // ✅ YENİ: Haftalık trend verilerini yükle (demo veri)
-                    await LoadWeeklyTrend();
 
                     LastUpdated = DateTime.Now;
                     UpdateLastUpdatedText();
@@ -144,7 +134,7 @@ namespace SM.MAUI.ViewModels
             }
             catch (Exception ex)
             {
-                await ShowError($"Dashboard verileri yuklenirken hata: {ex.Message}");
+                await ShowError($"Dashboard verileri yüklenirken hata: {ex.Message}");
             }
             finally
             {
@@ -152,85 +142,100 @@ namespace SM.MAUI.ViewModels
             }
         }
 
-        // ✅ YENİ: En az stoklu ürünleri yükle
+        // ✅ Gerçek az stoklu ürünleri API'den yükle
         private async Task LoadLowStockProducts()
         {
             try
             {
-                // API'den gerçek veri gelene kadar demo veri
                 LowStockProducts.Clear();
 
-                // En az stoklu ürünleri TopProducts'tan türet (tersten sıralayarak)
-                var lowStockItems = TopProducts.OrderBy(p => p.TotalQuantity).Take(5);
+                // Tüm envanter verilerini çek
+                var allInventory = await _apiService.GetAllInventoryAsync();
 
-                foreach (var item in lowStockItems)
-                {
-                    LowStockProducts.Add(new TopProductDto
+                // Ürün bazında toplam stokları hesapla
+                var productStocks = allInventory
+                    .GroupBy(inv => new { inv.ProductId, inv.Product?.Name, inv.Product?.SKU })
+                    .Select(g => new
                     {
-                        ProductName = item.ProductName,
-                        TotalQuantity = item.TotalQuantity,
-                        TotalValue = item.TotalValue
+                        ProductId = g.Key.ProductId,
+                        ProductName = g.Key.Name ?? "Bilinmeyen Ürün",
+                        SKU = g.Key.SKU ?? "",
+                        TotalQuantity = g.Sum(inv => inv.Quantity),
+                        Products = g.ToList()
+                    })
+                    .Where(p => p.TotalQuantity > 0) // Sadece stokta olan ürünler
+                    .OrderBy(p => p.TotalQuantity) // En az stoklu önce gelsin
+                    .Take(5) // İlk 5 tanesini al
+                    .ToList();
+
+                foreach (var productStock in productStocks)
+                {
+                    // Kritik stok seviyesi belirleme (örnek: 20'nin altındakiler kritik)
+                    var isInCriticalStock = productStock.TotalQuantity <= 20;
+                    var warningLevel = productStock.TotalQuantity switch
+                    {
+                        <= 5 => "🔴 Çok Kritik",
+                        <= 10 => "🟡 Kritik",
+                        <= 20 => "🟠 Düşük",
+                        _ => "🟢 Normal"
+                    };
+
+                    LowStockProducts.Add(new LowStockProductDto
+                    {
+                        ProductName = productStock.ProductName,
+                        SKU = productStock.SKU,
+                        CurrentStock = productStock.TotalQuantity,
+                        WarningLevel = warningLevel,
+                        IsInCriticalStock = isInCriticalStock
                     });
                 }
 
-                // Eğer hiç veri yoksa demo veri ekle
+                // Eğer hiç ürün yoksa demo veri göster
                 if (!LowStockProducts.Any())
                 {
-                    LowStockProducts.Add(new TopProductDto { ProductName = "Kırtasiye", TotalQuantity = 5, TotalValue = 150 });
-                    LowStockProducts.Add(new TopProductDto { ProductName = "Aksesuar", TotalQuantity = 8, TotalValue = 320 });
-                    LowStockProducts.Add(new TopProductDto { ProductName = "Elektronik", TotalQuantity = 12, TotalValue = 2400 });
+                    LowStockProducts.Add(new LowStockProductDto
+                    {
+                        ProductName = "Demo Ürün 1",
+                        SKU = "DEMO001",
+                        CurrentStock = 3,
+                        WarningLevel = "🔴 Çok Kritik",
+                        IsInCriticalStock = true
+                    });
+                    LowStockProducts.Add(new LowStockProductDto
+                    {
+                        ProductName = "Demo Ürün 2",
+                        SKU = "DEMO002",
+                        CurrentStock = 8,
+                        WarningLevel = "🟡 Kritik",
+                        IsInCriticalStock = true
+                    });
+                    LowStockProducts.Add(new LowStockProductDto
+                    {
+                        ProductName = "Demo Ürün 3",
+                        SKU = "DEMO003",
+                        CurrentStock = 15,
+                        WarningLevel = "🟠 Düşük",
+                        IsInCriticalStock = false
+                    });
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"LowStockProducts yüklenirken hata: {ex.Message}");
-            }
-        }
 
-        // ✅ YENİ: Haftalık trend verilerini yükle
-        private async Task LoadWeeklyTrend()
-        {
-            try
-            {
-                WeeklyTrend.Clear();
-
-                // Demo haftalık trend verileri
-                var today = DateTime.Today;
-                for (int i = 6; i >= 0; i--)
+                // Hata durumunda da demo veri göster
+                if (!LowStockProducts.Any())
                 {
-                    var date = today.AddDays(-i);
-                    var random = new Random(date.Day);
-
-                    WeeklyTrend.Add(new TrendDataDto
+                    LowStockProducts.Add(new LowStockProductDto
                     {
-                        Date = date,
-                        DayName = GetTurkishDayName(date.DayOfWeek),
-                        StockIn = random.Next(20, 100),
-                        StockOut = random.Next(15, 80),
-                        TotalValue = random.Next(5000, 25000)
+                        ProductName = "Veri yüklenemedi",
+                        SKU = "ERROR",
+                        CurrentStock = 0,
+                        WarningLevel = "❌ Hata",
+                        IsInCriticalStock = true
                     });
                 }
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"WeeklyTrend yüklenirken hata: {ex.Message}");
-            }
-        }
-
-        // ✅ YENİ: Türkçe gün adları
-        private string GetTurkishDayName(DayOfWeek dayOfWeek)
-        {
-            return dayOfWeek switch
-            {
-                DayOfWeek.Monday => "Pzt",
-                DayOfWeek.Tuesday => "Sal",
-                DayOfWeek.Wednesday => "Çar",
-                DayOfWeek.Thursday => "Per",
-                DayOfWeek.Friday => "Cum",
-                DayOfWeek.Saturday => "Cmt",
-                DayOfWeek.Sunday => "Paz",
-                _ => "?"
-            };
         }
 
         private void UpdateLastUpdatedText()
@@ -239,15 +244,15 @@ namespace SM.MAUI.ViewModels
 
             if (timeSpan.TotalMinutes < 1)
             {
-                LastUpdatedText = "Az once guncellendi";
+                LastUpdatedText = "Az önce güncellendi";
             }
             else if (timeSpan.TotalMinutes < 60)
             {
-                LastUpdatedText = $"{(int)timeSpan.TotalMinutes} dakika once";
+                LastUpdatedText = $"{(int)timeSpan.TotalMinutes} dakika önce";
             }
             else if (timeSpan.TotalHours < 24)
             {
-                LastUpdatedText = $"{(int)timeSpan.TotalHours} saat once";
+                LastUpdatedText = $"{(int)timeSpan.TotalHours} saat önce";
             }
             else
             {
@@ -269,7 +274,7 @@ namespace SM.MAUI.ViewModels
         {
             await LoadDashboardData();
 
-            // Timer başlat - her dakika güncelle (Application.Current kullan)
+            // Timer başlat - her dakika güncelle
             Application.Current?.Dispatcher.StartTimer(TimeSpan.FromMinutes(1), () =>
             {
                 UpdateLastUpdatedText();
@@ -278,13 +283,13 @@ namespace SM.MAUI.ViewModels
         }
     }
 
-    // ✅ YENİ: Trend verisi için DTO
-    public class TrendDataDto
+    // ✅ Az stoklu ürünler için özel DTO
+    public class LowStockProductDto
     {
-        public DateTime Date { get; set; }
-        public string DayName { get; set; } = string.Empty;
-        public int StockIn { get; set; }
-        public int StockOut { get; set; }
-        public decimal TotalValue { get; set; }
+        public string ProductName { get; set; } = string.Empty;
+        public string SKU { get; set; } = string.Empty;
+        public int CurrentStock { get; set; }
+        public string WarningLevel { get; set; } = string.Empty;
+        public bool IsInCriticalStock { get; set; }
     }
 }
