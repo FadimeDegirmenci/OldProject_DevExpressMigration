@@ -18,7 +18,7 @@ namespace SM.MAUI.Views
             base.OnAppearing();
 
             // ViewModel'deki LoadWarehouses metodu constructor'da çaðrýlýyor
-            // Eðer tekrar yüklemek isterseniz burada çaðýrabilirsiniz
+            
         }
     }
 }

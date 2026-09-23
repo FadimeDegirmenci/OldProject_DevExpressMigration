@@ -26,7 +26,7 @@ namespace SM.API.Data
                 entity.HasIndex(e => e.SKU).IsUnique(); // SKU benzersiz olmalı
                 entity.Property(e => e.Name).HasMaxLength(100);
                 entity.Property(e => e.Description).HasMaxLength(500);
-                entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.Price).HasColumnType("decimal(10,2)");
             });
 
             // Warehouse tablosu yapılandırması
