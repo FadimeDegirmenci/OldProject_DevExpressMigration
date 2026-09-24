@@ -3,6 +3,7 @@
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
              xmlns:converters="clr-namespace:SM.MAUI.Converters"
              Title="Ürün Listesi">
 
@@ -14,7 +15,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <!-- Toolbar -->
+            <RowDefinition Height="Auto" />
+            <!-- Arama çubuğu -->
             <RowDefinition Height="*" />
+            <!-- İçerik -->
         </Grid.RowDefinitions>
 
         <!-- Toolbar (aynen kalıyor) -->
@@ -42,12 +47,20 @@
                     Clicked="OnBackToMainClicked" />
         </Grid>
 
-        <!-- Loading / Error (aynen kalıyor) -->
-        <ActivityIndicator Grid.Row="1" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
+        <!-- Arama çubuğu -->
+        <dxe:TextEdit x:Name="searchEdit"
+                      Grid.Row="1"
+                      Margin="10,8"
+                      PlaceholderText="Ürün adı veya SKU ara..."
+                      ClearIconColor="#6C757D"
+                      TextChanged="OnSearchTextChanged"/>
+
+        <!-- Loading / Error (aynen kalıyor, sadece satır 1 -> 2) -->
+        <ActivityIndicator Grid.Row="2" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
                           Color="#2E86AB" VerticalOptions="Center" HorizontalOptions="Center"
                           HeightRequest="60" WidthRequest="60" />
 
-        <Frame Grid.Row="1" BackgroundColor="#F8D7DA" BorderColor="#DC3545" CornerRadius="10"
+        <Frame Grid.Row="2" BackgroundColor="#F8D7DA" BorderColor="#DC3545" CornerRadius="10"
                Padding="20" Margin="20" IsVisible="{Binding HasError}" VerticalOptions="Center" HasShadow="False">
             <StackLayout>
                 <Grid ColumnDefinitions="Auto,*">
@@ -61,7 +74,7 @@
         </Frame>
 
         <!-- Ürün Grid'i -->
-        <dxg:DataGridView Grid.Row="1"
+        <dxg:DataGridView Grid.Row="2"
                            x:Name="productGrid"
                            ItemsSource="{Binding Products}"
                            IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"

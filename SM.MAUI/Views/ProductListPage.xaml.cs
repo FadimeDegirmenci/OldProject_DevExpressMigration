@@ -19,7 +19,22 @@ namespace SM.MAUI.Views
             base.OnAppearing();
             await _viewModel.OnAppearing();   // ← eksik olan satır, ürünleri burada yüklüyor
         }
+        void OnSearchTextChanged(object sender, EventArgs e)
+        {
+            var textEdit = (DevExpress.Maui.Editors.TextEdit)sender;
+            var text = textEdit.Text?.Trim();
 
+            if (string.IsNullOrEmpty(text))
+            {
+                productGrid.FilterString = string.Empty;
+                return;
+            }
+
+            var escaped = text.Replace("'", "''");
+
+            productGrid.FilterString =
+                $"Contains([Name], '{escaped}') Or Contains([SKU], '{escaped}')";
+        }
         void OnProductTapConfirmed(object sender, DataGridGestureEventArgs e)
         {
             if (e.Item is Product product)
@@ -30,5 +45,6 @@ namespace SM.MAUI.Views
         {
             await Shell.Current.GoToAsync("..");
         }
+
     }
 }
