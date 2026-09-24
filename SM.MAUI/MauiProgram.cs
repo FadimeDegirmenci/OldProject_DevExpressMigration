@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DevExpress.Maui;
+using Microsoft.Extensions.Logging;
 using SM.MAUI.Services;
 using SM.MAUI.ViewModels;
 using SM.MAUI.Views;
-using Syncfusion.Maui.Core.Hosting;
 using ZXing.Net.Maui.Controls;
 
 namespace SM.MAUI;
@@ -15,15 +15,19 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseBarcodeReader()
-            .ConfigureSyncfusionCore() // ✅ BU SATIRI EKLEDİM
+            .UseDevExpressCharts()
+            .UseDevExpress(useLocalization: false)
+            .UseDevExpressCollectionView()
+            .UseDevExpressControls()
+            .UseDevExpressEditors()
+            .UseDevExpressDataGrid()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // ✅ SYNCFUSION LİSANS AYARI (İSTEĞE BAĞLI)
-        // Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("YOUR_LICENSE_KEY_HERE");
+        
 
         // Services
         builder.Services.AddSingleton<ApiService>();

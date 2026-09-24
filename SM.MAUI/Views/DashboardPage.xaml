@@ -3,7 +3,7 @@
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SM.MAUI.Converters"
-             xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
+             xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
              Title="{Binding Title}"
              BackgroundColor="#F5F7FA">
 
@@ -181,22 +181,26 @@
                                TextColor="#6C757D"
                                Margin="0,5,0,15"
                                HorizontalOptions="Center" />
+                        <dxc:PieChartView HeightRequest="280" Margin="0,10,0,0">
+                            <dxc:PieChartView.Series>
+                                <dxc:PieSeries>
+                                    <dxc:PieSeries.Data>
+                                        <dxc:PieSeriesDataAdapter DataSource="{Binding WarehouseStocks}"
+                                           LabelDataMember="WarehouseName"
+                                           ValueDataMember="TotalValue"/>
+                                    </dxc:PieSeries.Data>
+                                    <dxc:PieSeries.Label>
+                                        <dxc:PieSeriesLabel Position="TwoColumns" TextPattern="{}{VP}%" Indent="15"/>
+                                    </dxc:PieSeries.Label>
+                                </dxc:PieSeries>
+                            </dxc:PieChartView.Series>
 
-                        <chart:SfCircularChart HeightRequest="250" Margin="0,10,0,0">
-                            <chart:SfCircularChart.Series>
-                                <chart:PieSeries ItemsSource="{Binding WarehouseStocks}"
-                                               XBindingPath="WarehouseName"
-                                               YBindingPath="TotalValue"
-                                               ShowDataLabels="True"
-                                               LabelContext="Percentage" />
-                            </chart:SfCircularChart.Series>
-
-                            <chart:SfCircularChart.Legend>
-                                <chart:ChartLegend IsVisible="True" 
-                                                 Placement="Bottom" />
-                            </chart:SfCircularChart.Legend>
-                        </chart:SfCircularChart>
-
+                            <dxc:PieChartView.Legend>
+                                <dxc:Legend VerticalPosition="BottomOutside"
+                    HorizontalPosition="Center"
+                    Orientation="LeftToRight"/>
+                            </dxc:PieChartView.Legend>
+                        </dxc:PieChartView>
                         <!-- Depo Detayları -->
                         <StackLayout Margin="0,20,0,0" Spacing="8">
                             <Label Text="📋 Detaylı Depo Bilgileri:" 
@@ -312,23 +316,36 @@
                                    Margin="10,0,0,0" />
                         </Grid>
 
-                        <chart:SfCartesianChart HeightRequest="300" Margin="0,10,0,0">
-                            <chart:SfCartesianChart.XAxes>
-                                <chart:CategoryAxis ShowMajorGridLines="False" />
-                            </chart:SfCartesianChart.XAxes>
+                        <dxc:ChartView HeightRequest="340" Margin="0,10,0,0">
+                            <dxc:ChartView.AxisX>
+                                <dxc:QualitativeAxisX>
+                                    <dxc:QualitativeAxisX.Label>
+                                        <dxc:AxisLabel Angle="45">
+                                            <dxc:AxisLabel.ResolveOverlappingOptions>
+                                                <dxc:AxisLabelResolveOverlappingOptions AllowHide="False"/>
+                                            </dxc:AxisLabel.ResolveOverlappingOptions>
+                                        </dxc:AxisLabel>
+                                    </dxc:QualitativeAxisX.Label>
+                                </dxc:QualitativeAxisX>
+                            </dxc:ChartView.AxisX>
 
-                            <chart:SfCartesianChart.YAxes>
-                                <chart:NumericalAxis ShowMajorGridLines="True" />
-                            </chart:SfCartesianChart.YAxes>
-
-                            <chart:SfCartesianChart.Series>
-                                <chart:ColumnSeries ItemsSource="{Binding TopProducts}"
-                                                  XBindingPath="ProductName"
-                                                  YBindingPath="TotalQuantity"
-                                                  ShowDataLabels="True"
-                                                  Fill="#2E86AB" />
-                            </chart:SfCartesianChart.Series>
-                        </chart:SfCartesianChart>
+                            <dxc:ChartView.Series>
+                                <dxc:BarSeries DisplayName="Stok Miktarı">
+                                    <dxc:BarSeries.Data>
+                                        <dxc:SeriesDataAdapter DataSource="{Binding TopProducts}"
+                                        ArgumentDataMember="ProductName">
+                                            <dxc:ValueDataMember Type="Value" Member="TotalQuantity"/>
+                                        </dxc:SeriesDataAdapter>
+                                    </dxc:BarSeries.Data>
+                                    <dxc:BarSeries.Label>
+                                        <dxc:BarSeriesLabel TextPattern="{}{V}" Position="Outside"/>
+                                    </dxc:BarSeries.Label>
+                                    <dxc:BarSeries.Style>
+                                        <dxc:BarSeriesStyle Fill="#2E86AB"/>
+                                    </dxc:BarSeries.Style>
+                                </dxc:BarSeries>
+                            </dxc:ChartView.Series>
+                        </dxc:ChartView>
                     </StackLayout>
                 </Frame>
 

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// CORS ekle - Android emülatör için gerekli
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -15,40 +15,42 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add services to the container.
+// Controllers + JSON ayarlarý
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        // JSON serialization cycle sorununu çöz
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
-// Entity Framework yapýlandýrmasý
+// Entity Framework
 builder.Services.AddDbContext<SMDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// CORS'u kullan - HTTPS redirect'ten önce olmalý
+// CORS
 app.UseCors("AllowAll");
 
-// Configure the HTTP request pipeline.
+// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// HTTPS redirect'i geliþtirme ortamýnda kapat - Android emülatör için
-// app.UseHttpsRedirection(); // Bu satýrý yorum yap
+// HTTP kullanýyoruz, bu yüzden kapalý
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
 app.MapControllers();
 
-// Tüm network interface'leri dinle
-app.Run("http://0.0.0.0:5000");
+// Bilgisayarýn yerel IP adresinden API'yi yayýnla
+app.Run("http://192.168.1.118:5000");

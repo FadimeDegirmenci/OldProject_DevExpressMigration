@@ -12,7 +12,6 @@ namespace SM.MAUI.Services
 
         public ApiService()
         {
-            // HTTPS sertifika doğrulamasını geliştirme için bypass et
             var handler = new HttpClientHandler();
 #if DEBUG
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
@@ -20,13 +19,10 @@ namespace SM.MAUI.Services
 
             _httpClient = new HttpClient(handler);
 
-            // Android emülatörde localhost için
 #if ANDROID
-            // Android emülatörde 10.0.2.2 = host makinenin localhost'u
-            _httpClient.BaseAddress = new Uri("http://10.0.2.2:5000/");
+            _httpClient.BaseAddress = new Uri("http://192.168.1.118:5000/");
 #else
-            // Windows/Desktop için
-            _httpClient.BaseAddress = new Uri("http://localhost:5000/");
+_httpClient.BaseAddress = new Uri("http://localhost:5000/");
 #endif
 
             _jsonOptions = new JsonSerializerOptions
@@ -458,7 +454,6 @@ namespace SM.MAUI.Services
             }
         }
 
-        // YENİ EKLENEN METODLAR
         public async Task<List<InventoryItem>> GetProductInventoryAsync(int productId)
         {
             try
@@ -586,7 +581,7 @@ namespace SM.MAUI.Services
                             WarehouseName = w.WarehouseName,
                             ProductCount = w.TotalProducts,
                             TotalQuantity = w.TotalQuantity,
-                            TotalValue = w.TotalValue
+                            TotalValue = (double)w.TotalValue   // decimal (API) -> double (grafik için)
                         }).ToList()
                     };
 
@@ -655,18 +650,17 @@ namespace SM.MAUI.Services
         public int NewQuantity { get; set; }
         public int QuantityChanged { get; set; }
     }
-    // ApiService.cs dosyasındaki WarehouseStockDto sınıfını bu şekilde güncelleyin:
 
     public class WarehouseStockDto
     {
         public string WarehouseName { get; set; } = string.Empty;
         public int ProductCount { get; set; }
         public int TotalQuantity { get; set; }
-        public decimal TotalValue { get; set; }
+        public double TotalValue { get; set; }   // DevExpress PieChart ValueDataMember için double olmalı
 
-        // ✅ YENİ: Yüzde hesaplaması için eklendi
         public decimal Percentage { get; set; }
     }
+
     public class DashboardSummaryDto
     {
         public int TotalProducts { get; set; }
@@ -683,8 +677,6 @@ namespace SM.MAUI.Services
         public int TotalQuantity { get; set; }
         public decimal TotalValue { get; set; }
     }
-
-  
 
     public class ApiDashboardSummary
     {

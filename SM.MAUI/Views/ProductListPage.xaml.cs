@@ -1,41 +1,34 @@
-using SM.MAUI.ViewModels;
+using DevExpress.Maui.DataGrid;
 using SM.Core.Models;
+using SM.MAUI.ViewModels;
 
-namespace SM.MAUI.Views;
-
-public partial class ProductListPage : ContentPage
+namespace SM.MAUI.Views
 {
-    private readonly ProductListViewModel _viewModel;
-
-    public ProductListPage(ProductListViewModel viewModel)
+    public partial class ProductListPage : ContentPage
     {
-        InitializeComponent();
-        _viewModel = viewModel;
-        BindingContext = _viewModel;
-    }
+        private readonly ProductListViewModel _viewModel;
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _viewModel.OnAppearing();
-    }
-
-    private async void OnBackToMainClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("..");
-    }
-
-    private async void OnProductTapped(object sender, EventArgs e)
-    {
-        if (sender is Frame frame && frame.BindingContext is Product product)
+        public ProductListPage(ProductListViewModel viewModel)
         {
-            var parameters = new Dictionary<string, object>
-            {
-                { "ProductId", product.Id },
-                { "ProductName", product.Name }
-            };
+            InitializeComponent();
+            BindingContext = _viewModel = viewModel;
+        }
 
-            await Shell.Current.GoToAsync("ProductDetailPage", parameters);
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await _viewModel.OnAppearing();   // ← eksik olan satır, ürünleri burada yüklüyor
+        }
+
+        void OnProductTapConfirmed(object sender, DataGridGestureEventArgs e)
+        {
+            if (e.Item is Product product)
+                _viewModel.ProductTappedCommand.Execute(product);
+        }
+
+        async void OnBackToMainClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("..");
         }
     }
 }

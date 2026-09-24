@@ -116,6 +116,7 @@ namespace SM.API.Controllers
             }
             catch (Exception ex)
             {
+                //TODO: Log ex.ToString()
                 return StatusCode(500, $"Dashboard verileri alınırken hata oluştu: {ex.Message}");
             }
         }
