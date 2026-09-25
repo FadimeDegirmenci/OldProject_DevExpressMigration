@@ -10,6 +10,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Baslik -->
@@ -135,6 +136,24 @@
                 </Frame>
 
             </Grid>
+            <!-- DevExpress Tasarım Sayfası -->
+            <Frame Grid.Row="3"
+       BackgroundColor="#343A40"
+       CornerRadius="15"
+       Margin="5,15,5,0"
+       HasShadow="True">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnDevExpressDesignTapped" />
+                </Frame.GestureRecognizers>
+                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Orientation="Horizontal" Spacing="10">
+                    <Label Text="🎨" FontSize="28" VerticalOptions="Center" />
+                    <Label Text="DevExpress Tasarım Sayfası"
+               FontSize="16"
+               FontAttributes="Bold"
+               TextColor="White"
+               VerticalOptions="Center" />
+                </StackLayout>
+            </Frame>
         </Grid>
     </ScrollView>
 

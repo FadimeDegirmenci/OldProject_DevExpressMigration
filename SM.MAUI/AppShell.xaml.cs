@@ -28,6 +28,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("WarehouseDetailPage", typeof(WarehouseDetailPage));
 
         Routing.RegisterRoute("DashboardPage", typeof(DashboardPage));
+        Routing.RegisterRoute("DevExpressPage", typeof(DevExpressPage));
 
 
     }
