@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SM.MAUI.Converters"
              xmlns:dxc="clr-namespace:DevExpress.Maui.Charts;assembly=DevExpress.Maui.Charts"
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
              Title="{Binding Title}"
              BackgroundColor="#F5F7FA">
 
@@ -66,240 +67,152 @@
                     Padding="15">
             <StackLayout Spacing="20">
 
-                <!-- Özet Kartlar -->
-                <Grid RowSpacing="10" ColumnSpacing="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Toplam Ürün -->
-                    <Frame Grid.Row="0" Grid.Column="0"
-                           BackgroundColor="#E8F5E8"
-                           CornerRadius="15"
-                           Padding="15">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToProductsCommand}" />
-                        </Frame.GestureRecognizers>
+                <!-- Depo Stok Dağılımı Grafik: DXButton kart -->
+                <dx:DXButton BackgroundColor="White"
+                             CornerRadius="15"
+                             BorderThickness="0"
+                             PressedScale="0.97"
+                             Padding="20"
+                             Command="{Binding GoToWarehousesCommand}">
+                    <dx:DXButton.Content>
                         <StackLayout>
-                            <Label Text="📦" FontSize="24" HorizontalOptions="Center" />
-                            <Label Text="{Binding TotalProducts}"
-                                   FontSize="24"
-                                   FontAttributes="Bold"
-                                   TextColor="#2D5016"
-                                   HorizontalOptions="Center" />
-                            <Label Text="Toplam Ürün"
-                                   FontSize="12"
-                                   TextColor="#2D5016"
-                                   HorizontalOptions="Center" />
-                        </StackLayout>
-                    </Frame>
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Label Grid.Column="0" Text="📊" FontSize="20" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="Depo Stok Dağılımı"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="#2E86AB"
+                                       VerticalOptions="Center"
+                                       Margin="10,0,0,0" />
+                            </Grid>
 
-                    <!-- Toplam Depo -->
-                    <Frame Grid.Row="0" Grid.Column="1"
-                           BackgroundColor="#FFF3CD"
-                           CornerRadius="15"
-                           Padding="15">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding GoToWarehousesCommand}" />
-                        </Frame.GestureRecognizers>
-                        <StackLayout>
-                            <Label Text="🏪" FontSize="24" HorizontalOptions="Center" />
-                            <Label Text="{Binding TotalWarehouses}"
-                                   FontSize="24"
-                                   FontAttributes="Bold"
-                                   TextColor="#856404"
-                                   HorizontalOptions="Center" />
-                            <Label Text="Toplam Depo"
-                                   FontSize="12"
-                                   TextColor="#856404"
-                                   HorizontalOptions="Center" />
-                        </StackLayout>
-                    </Frame>
-
-                    <!-- Toplam Stok -->
-                    <Frame Grid.Row="1" Grid.Column="0"
-                           BackgroundColor="#E3F2FD"
-                           CornerRadius="15"
-                           Padding="15">
-                        <StackLayout>
-                            <Label Text="📊" FontSize="24" HorizontalOptions="Center" />
-                            <Label Text="{Binding TotalStockQuantity}"
-                                   FontSize="24"
-                                   FontAttributes="Bold"
-                                   TextColor="#1565C0"
-                                   HorizontalOptions="Center" />
-                            <Label Text="Toplam Stok"
-                                   FontSize="12"
-                                   TextColor="#1565C0"
-                                   HorizontalOptions="Center" />
-                        </StackLayout>
-                    </Frame>
-
-                    <!-- Toplam Değer -->
-                    <Frame Grid.Row="1" Grid.Column="1"
-                           BackgroundColor="#FCE4EC"
-                           CornerRadius="15"
-                           Padding="15">
-                        <StackLayout>
-                            <Label Text="💰" FontSize="24" HorizontalOptions="Center" />
-                            <Label Text="{Binding TotalStockValue, StringFormat='{0:F0} TL'}"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="#AD1457"
-                                   HorizontalOptions="Center" />
-                            <Label Text="Toplam Değer"
-                                   FontSize="12"
-                                   TextColor="#AD1457"
-                                   HorizontalOptions="Center" />
-                        </StackLayout>
-                    </Frame>
-                </Grid>
-
-                <!-- Depo Stok Dağılımı Grafik -->
-                <Frame BackgroundColor="White"
-                       CornerRadius="15"
-                       Padding="20">
-                    <StackLayout>
-                        <Grid ColumnDefinitions="Auto,*">
-                            <Label Grid.Column="0" Text="📊" FontSize="20" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="Depo Stok Dağılımı"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="#2E86AB"
-                                   VerticalOptions="Center"
-                                   Margin="10,0,0,0" />
-                        </Grid>
-
-                        <!-- Grafik açıklaması -->
-                        <Label Text="Depoların toplam stok değerlerine göre yüzdelik dağılımı"
-                               FontSize="13"
-                               TextColor="#6C757D"
-                               Margin="0,5,0,15"
-                               HorizontalOptions="Center" />
-                        <dxc:PieChartView HeightRequest="280" Margin="0,10,0,0">
-                            <dxc:PieChartView.Series>
-                                <dxc:PieSeries>
-                                    <dxc:PieSeries.Data>
-                                        <dxc:PieSeriesDataAdapter DataSource="{Binding WarehouseStocks}"
-                                           LabelDataMember="WarehouseName"
-                                           ValueDataMember="TotalValue"/>
-                                    </dxc:PieSeries.Data>
-                                    <dxc:PieSeries.Label>
-                                        <dxc:PieSeriesLabel Position="TwoColumns" TextPattern="{}{VP}%" Indent="15"/>
-                                    </dxc:PieSeries.Label>
-                                </dxc:PieSeries>
-                            </dxc:PieChartView.Series>
-
-                            <dxc:PieChartView.Legend>
-                                <dxc:Legend VerticalPosition="BottomOutside"
-                    HorizontalPosition="Center"
-                    Orientation="LeftToRight"/>
-                            </dxc:PieChartView.Legend>
-                        </dxc:PieChartView>
-                        <!-- Depo Detayları -->
-                        <StackLayout Margin="0,20,0,0" Spacing="8">
-                            <Label Text="📋 Detaylı Depo Bilgileri:" 
-                                   FontSize="16" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#2E86AB" />
-
-                            <Label Text="Her deponun stok durumu ve toplam değeri"
-                                   FontSize="12"
+                            <!-- Grafik açıklaması -->
+                            <Label Text="Depoların toplam stok değerlerine göre yüzdelik dağılımı"
+                                   FontSize="13"
                                    TextColor="#6C757D"
-                                   Margin="0,0,0,10" />
+                                   Margin="0,5,0,15"
+                                   HorizontalOptions="Center" />
+                            <dxc:PieChartView HeightRequest="280" Margin="0,10,0,0">
+                                <dxc:PieChartView.Series>
+                                    <dxc:PieSeries>
+                                        <dxc:PieSeries.Data>
+                                            <dxc:PieSeriesDataAdapter DataSource="{Binding WarehouseStocks}"
+                                               LabelDataMember="WarehouseName"
+                                               ValueDataMember="TotalValue"/>
+                                        </dxc:PieSeries.Data>
+                                        <dxc:PieSeries.Label>
+                                            <dxc:PieSeriesLabel Position="TwoColumns" TextPattern="{}{VP}%" Indent="15"/>
+                                        </dxc:PieSeries.Label>
+                                    </dxc:PieSeries>
+                                </dxc:PieChartView.Series>
 
-                            <CollectionView ItemsSource="{Binding WarehouseStocks}" 
-                                          BackgroundColor="Transparent">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Frame BackgroundColor="#F8F9FA" 
-                                               BorderColor="#E9ECEF"
-                                               CornerRadius="12" 
-                                               Padding="15" 
-                                               Margin="0,3">
-                                            <Grid ColumnDefinitions="Auto,*,Auto" 
-                                                  RowDefinitions="Auto,Auto">
+                                <dxc:PieChartView.Legend>
+                                    <dxc:Legend VerticalPosition="BottomOutside"
+                        HorizontalPosition="Center"
+                        Orientation="LeftToRight"/>
+                                </dxc:PieChartView.Legend>
+                            </dxc:PieChartView>
 
-                                                <!-- Renkli Gösterge -->
-                                                <Frame Grid.Column="0" 
-                                                       Grid.RowSpan="2"
-                                                       BackgroundColor="#2E86AB" 
-                                                       WidthRequest="4" 
-                                                       HeightRequest="40"
-                                                       CornerRadius="2"
-                                                       VerticalOptions="Center"
-                                                       Padding="0"
-                                                       Margin="0,0,15,0" />
+                            <!-- Depo Detayları -->
+                            <StackLayout Margin="0,20,0,0" Spacing="8">
+                                <Label Text="📋 Detaylı Depo Bilgileri:" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#2E86AB" />
 
-                                                <!-- Depo Adı -->
-                                                <Label Grid.Column="1" 
-                                                       Grid.Row="0"
-                                                       Text="{Binding WarehouseName}"
-                                                       FontSize="16"
-                                                       FontAttributes="Bold"
-                                                       TextColor="#2E86AB"
-                                                       VerticalOptions="Start" />
+                                <Label Text="Her deponun stok durumu ve toplam değeri"
+                                       FontSize="12"
+                                       TextColor="#6C757D"
+                                       Margin="0,0,0,10" />
 
-                                                <!-- Stok Miktarı ve Ürün Sayısı -->
-                                                <StackLayout Grid.Column="1" 
-                                                           Grid.Row="1"
-                                                           Orientation="Horizontal"
-                                                           Spacing="15">
-                                                    <Label Text="{Binding TotalQuantity, StringFormat='{0} adet stok'}"
-                                                           FontSize="12"
-                                                           TextColor="#000000" />
-                                                    <Label Text="{Binding ProductCount, StringFormat='{0} farklı ürün'}"
-                                                           FontSize="12"
-                                                           TextColor="#000000" />
-                                                </StackLayout>
+                                <CollectionView ItemsSource="{Binding WarehouseStocks}" 
+                                              BackgroundColor="Transparent">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Frame BackgroundColor="#F8F9FA" 
+                                                   BorderColor="#E9ECEF"
+                                                   CornerRadius="12" 
+                                                   Padding="15" 
+                                                   Margin="0,3">
+                                                <Grid ColumnDefinitions="Auto,*,Auto" 
+                                                      RowDefinitions="Auto,Auto">
 
-                                                <!-- Toplam Değer -->
-                                                <StackLayout Grid.Column="2"
+                                                    <!-- Renkli Gösterge -->
+                                                    <Frame Grid.Column="0" 
                                                            Grid.RowSpan="2"
+                                                           BackgroundColor="#2E86AB" 
+                                                           WidthRequest="4" 
+                                                           HeightRequest="40"
+                                                           CornerRadius="2"
                                                            VerticalOptions="Center"
-                                                           HorizontalOptions="End"
-                                                           Margin="10,0,0,0">
-                                                    <Label Text="{Binding TotalValue, StringFormat='{0:N0} ₺'}"
+                                                           Padding="0"
+                                                           Margin="0,0,15,0" />
+
+                                                    <!-- Depo Adı -->
+                                                    <Label Grid.Column="1" 
+                                                           Grid.Row="0"
+                                                           Text="{Binding WarehouseName}"
                                                            FontSize="16"
                                                            FontAttributes="Bold"
-                                                           TextColor="#007ACC"
-                                                           HorizontalOptions="End" />
-                                                    <Label Text="toplam değer"
-                                                           FontSize="10"
-                                                           TextColor="#6C757D"
-                                                           HorizontalOptions="End" />
-                                                </StackLayout>
-                                            </Grid>
-                                        </Frame>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
+                                                           TextColor="#2E86AB"
+                                                           VerticalOptions="Start" />
 
-                            <!-- Özet Bilgi -->
-                            <Frame BackgroundColor="#E8F5E8"
-                                   BorderColor="#C8E6C9"
-                                   CornerRadius="10"
-                                   Padding="15"
-                                   Margin="0,10,0,0">
-                                <StackLayout Orientation="Horizontal" 
-                                           HorizontalOptions="Center"
-                                           Spacing="10">
-                                    <Label Text="💡" FontSize="16" VerticalOptions="Center" />
-                                    <Label Text="Grafikteki yüzdeler toplam stok değerine göre hesaplanmıştır"
-                                           FontSize="12"
-                                           TextColor="#2E7D32"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="FillAndExpand" />
-                                </StackLayout>
-                            </Frame>
+                                                    <!-- Stok Miktarı ve Ürün Sayısı -->
+                                                    <StackLayout Grid.Column="1" 
+                                                               Grid.Row="1"
+                                                               Orientation="Horizontal"
+                                                               Spacing="15">
+                                                        <Label Text="{Binding TotalQuantity, StringFormat='{0} adet stok'}"
+                                                               FontSize="12"
+                                                               TextColor="#000000" />
+                                                        <Label Text="{Binding ProductCount, StringFormat='{0} farklı ürün'}"
+                                                               FontSize="12"
+                                                               TextColor="#000000" />
+                                                    </StackLayout>
+
+                                                    <!-- Toplam Değer -->
+                                                    <StackLayout Grid.Column="2"
+                                                               Grid.RowSpan="2"
+                                                               VerticalOptions="Center"
+                                                               HorizontalOptions="End"
+                                                               Margin="10,0,0,0">
+                                                        <Label Text="{Binding TotalValue, StringFormat='{0:N0} ₺'}"
+                                                               FontSize="16"
+                                                               FontAttributes="Bold"
+                                                               TextColor="#007ACC"
+                                                               HorizontalOptions="End" />
+                                                        <Label Text="toplam değer"
+                                                               FontSize="10"
+                                                               TextColor="#6C757D"
+                                                               HorizontalOptions="End" />
+                                                    </StackLayout>
+                                                </Grid>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                                <!-- Özet Bilgi -->
+                                <Frame BackgroundColor="#E8F5E8"
+                                       BorderColor="#C8E6C9"
+                                       CornerRadius="10"
+                                       Padding="15"
+                                       Margin="0,10,0,0">
+                                    <StackLayout Orientation="Horizontal" 
+                                               HorizontalOptions="Center"
+                                               Spacing="10">
+                                        <Label Text="💡" FontSize="16" VerticalOptions="Center" />
+                                        <Label Text="Grafikteki yüzdeler toplam stok değerine göre hesaplanmıştır"
+                                               FontSize="12"
+                                               TextColor="#2E7D32"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand" />
+                                    </StackLayout>
+                                </Frame>
+                            </StackLayout>
                         </StackLayout>
-                    </StackLayout>
-                </Frame>
+                    </dx:DXButton.Content>
+                </dx:DXButton>
 
                 <!-- En Çok Stoklu Ürünler Grafik -->
                 <Frame BackgroundColor="White"
@@ -349,7 +262,7 @@
                     </StackLayout>
                 </Frame>
 
-                <!-- ✅ DÜZELTİLDİ: Az Stoklu Ürünler Liste Format -->
+                <!-- Az Stoklu Ürünler Liste Format -->
                 <Frame BackgroundColor="White"
                        CornerRadius="15"
                        Padding="20">
