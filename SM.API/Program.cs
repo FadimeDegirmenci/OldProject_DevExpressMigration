@@ -53,4 +53,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Bilgisayarýn yerel IP adresinden API'yi yayýnla
-app.Run("http://192.168.1.118:5000");
+app.Run("http://0.0.0.0:5000");

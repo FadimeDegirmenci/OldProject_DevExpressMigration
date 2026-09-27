@@ -20,7 +20,7 @@ namespace SM.MAUI.Services
             _httpClient = new HttpClient(handler);
 
 #if ANDROID
-            _httpClient.BaseAddress = new Uri("http://192.168.1.118:5000/");
+            _httpClient.BaseAddress = new Uri("http://192.168.1.175:5000/");
 #else
 _httpClient.BaseAddress = new Uri("http://localhost:5000/");
 #endif
