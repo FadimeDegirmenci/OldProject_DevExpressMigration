@@ -8,8 +8,7 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
-        Routing.RegisterRoute("UserSelectionPage", typeof(UserSelectionPage));
-
+        
         // Route'ları kaydet - Views namespace'indeki sayfalar
         Routing.RegisterRoute("ProductListPage", typeof(ProductListPage));
         Routing.RegisterRoute("AddProductPage", typeof(AddProductPage));
@@ -29,6 +28,7 @@ public partial class AppShell : Shell
 
         Routing.RegisterRoute("DashboardPage", typeof(DashboardPage));
         Routing.RegisterRoute("DevExpressPage", typeof(DevExpressPage));
+        Routing.RegisterRoute("NavigasyonPage", typeof(NavigasyonPage));
 
 
     }

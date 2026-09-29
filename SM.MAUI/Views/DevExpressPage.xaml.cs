@@ -11,4 +11,8 @@ public partial class DevExpressPage : ContentPage
     {
         await DisplayAlert("Test", "DevExpress DXButton çalışıyor! 🎉", "Tamam");
     }
+    private async void OnNavigasyonClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("NavigasyonPage");
+    }
 }

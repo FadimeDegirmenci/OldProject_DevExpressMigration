@@ -31,7 +31,7 @@ public static class MauiProgram
 
         // Services
         builder.Services.AddSingleton<ApiService>();
-        builder.Services.AddSingleton<IUserRoleService, UserRoleService>();
+       
 
         // Views
         builder.Services.AddTransient<ProductListPage>();
@@ -44,7 +44,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AddWarehousePage>();
         builder.Services.AddTransient<EditWarehousePage>();
         builder.Services.AddTransient<WarehouseDetailPage>();
-        builder.Services.AddTransient<UserSelectionPage>();
+        
 
         // ViewModels
         builder.Services.AddTransient<ProductListViewModel>();

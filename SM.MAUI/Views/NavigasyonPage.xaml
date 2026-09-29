@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SM.MAUI.Views.NavigasyonPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
+             xmlns:dxc="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             Title="Navigasyon Deneme">
+
+    <Grid>
+        <!-- Sayfanın asıl içeriği -->
+        <VerticalStackLayout VerticalOptions="End"
+                     HorizontalOptions="Center"
+                     Margin="0,0,0,30"
+                     Spacing="4">
+            <Label x:Name="okIsareti"
+           Text="▲"
+           FontSize="24"
+           TextColor="#2E86AB"
+           HorizontalOptions="Center" />
+            <Label Text="Menü için tıkla"
+           FontSize="13"
+           TextColor="#6C757D"
+           HorizontalOptions="Center" />
+
+            <VerticalStackLayout.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Up" Swiped="OnYukariKaydirildi" />
+                <TapGestureRecognizer Tapped="OnDokunuldu" />
+            </VerticalStackLayout.GestureRecognizers>
+        </VerticalStackLayout>
+
+        <!-- Alttan açılan menü -->
+        <dxc:BottomSheet x:Name="menuSheet"
+                         HalfExpandedRatio="0.3"
+                         ShowGrabber="True"
+                         CornerRadius="20">
+            <VerticalStackLayout Padding="20" Spacing="12">
+                <Label Text="Menü" FontSize="20" FontAttributes="Bold" TextColor="#2E86AB" />
+                <dx:DXButton Content="Ürünler" Clicked="OnUrunlerClicked" />
+                <dx:DXButton Content="Hakkında" Clicked="OnHakkindaClicked" />
+            </VerticalStackLayout>
+        </dxc:BottomSheet>
+    </Grid>
+
+</ContentPage>
