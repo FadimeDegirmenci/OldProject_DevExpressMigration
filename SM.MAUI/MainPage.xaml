@@ -11,6 +11,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Baslik -->
@@ -154,7 +155,26 @@
                VerticalOptions="Center" />
                 </StackLayout>
             </Frame>
+            <!-- Sonsuz Kaydırma (Infinite Data Source) -->
+            <Frame Grid.Row="4"
+       BackgroundColor="#20C997"
+       CornerRadius="15"
+       Margin="5,15,5,0"
+       HasShadow="True">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnProductLoadMoreTapped" />
+                </Frame.GestureRecognizers>
+                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Orientation="Horizontal" Spacing="10">
+                    <Label Text="♾️" FontSize="28" VerticalOptions="Center" />
+                    <Label Text="Ürünler (Sonsuz Kaydırma)"
+               FontSize="16"
+               FontAttributes="Bold"
+               TextColor="White"
+               VerticalOptions="Center" />
+                </StackLayout>
+            </Frame>
         </Grid>
+        
     </ScrollView>
 
 </ContentPage>

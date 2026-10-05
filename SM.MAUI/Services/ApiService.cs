@@ -20,7 +20,7 @@ namespace SM.MAUI.Services
             _httpClient = new HttpClient(handler);
 
 #if ANDROID
-            _httpClient.BaseAddress = new Uri("http://192.168.1.118:5000/");
+            _httpClient.BaseAddress = new Uri("http://192.168.1.111:5000/");
 #else
 _httpClient.BaseAddress = new Uri("http://localhost:5000/");
 #endif
@@ -61,7 +61,33 @@ _httpClient.BaseAddress = new Uri("http://localhost:5000/");
                 throw new Exception($"Beklenmeyen hata: {ex.Message}");
             }
         }
+        public async Task<List<Product>> GetProductsPagedAsync(int skip, int take)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"api/products/paged?skip={skip}&take={take}");
 
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonContent = await response.Content.ReadAsStringAsync();
+                    var products = JsonSerializer.Deserialize<List<Product>>(jsonContent, _jsonOptions);
+                    return products ?? new List<Product>();
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"API Hatası: {response.StatusCode} - {errorContent}");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new Exception($"Ağ hatası: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Beklenmeyen hata: {ex.Message}");
+            }
+        }
         public async Task<Product?> GetProductByIdAsync(int id)
         {
             try

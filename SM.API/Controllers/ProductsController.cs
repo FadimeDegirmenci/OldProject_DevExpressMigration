@@ -35,6 +35,32 @@ namespace SM.API.Controllers
                 return StatusCode(500, $"Ürünler alınırken hata oluştu: {ex.Message}");
             }
         }
+        // GET: api/products/paged?skip=0&take=20
+        [HttpGet("paged")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsPaged(int skip = 0, int take = 20)
+        {
+            try
+            {
+                if (skip < 0 || take <= 0)
+                {
+                    return BadRequest("skip 0 veya daha büyük, take 0'dan büyük olmalıdır.");
+                }
+
+                var products = await _context.Products
+                    .Include(p => p.InventoryItems)
+                    .ThenInclude(i => i.Warehouse)
+                    .OrderBy(p => p.Id)
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ürünler alınırken hata oluştu: {ex.Message}");
+            }
+        }
 
         // GET: api/products/5
         [HttpGet("{id}")]

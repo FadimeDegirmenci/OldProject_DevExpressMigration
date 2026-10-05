@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SM.MAUI.Views.ProductLoadMorePage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
+             Title="{Binding Title}">
+
+    <dxg:DataGridView ItemsSource="{Binding Products}"
+                      IsLoadMoreEnabled="{Binding IsLoadMoreEnabled}"
+                      LoadMoreCommand="{Binding LoadMoreCommand}"
+                      IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
+                      AutoGenerateColumnsMode="None"
+                      IsReadOnly="True"
+                      Margin="10,5">
+
+        <dxg:DataGridView.Columns>
+            <dxg:TextColumn   FieldName="Name"        Caption="Ürün Adı"/>
+            <dxg:TextColumn   FieldName="SKU"         Caption="SKU"/>
+            <dxg:NumberColumn FieldName="Price"       Caption="Fiyat (TL)" DisplayFormat="F2"/>
+            <dxg:DateColumn   FieldName="CreatedDate" Caption="Eklenme Tarihi" DisplayFormat="dd.MM.yyyy"/>
+        </dxg:DataGridView.Columns>
+
+    </dxg:DataGridView>
+</ContentPage>

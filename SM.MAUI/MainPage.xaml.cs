@@ -44,4 +44,8 @@ public partial class MainPage : ContentPage
     {
         await Shell.Current.GoToAsync("DevExpressPage");
     }
+    private async void OnProductLoadMoreTapped(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("ProductLoadMorePage");
+    }
 }
