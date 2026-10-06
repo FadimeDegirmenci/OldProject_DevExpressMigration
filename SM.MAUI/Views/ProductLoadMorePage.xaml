@@ -2,23 +2,80 @@
 <ContentPage x:Class="SM.MAUI.Views.ProductLoadMorePage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dx="http://schemas.devexpress.com/maui"
              xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
              Title="{Binding Title}">
 
-    <dxg:DataGridView ItemsSource="{Binding Products}"
-                      IsLoadMoreEnabled="{Binding IsLoadMoreEnabled}"
-                      LoadMoreCommand="{Binding LoadMoreCommand}"
-                      IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
-                      AutoGenerateColumnsMode="None"
-                      IsReadOnly="True"
-                      Margin="10,5">
+    <ContentPage.Resources>
+        <!-- İskeletteki gri çubukların ortak görünümü -->
+        <Style x:Key="SkeletonBar" TargetType="dx:DXBorder">
+            <Setter Property="BackgroundColor" Value="#E9ECEF" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="HeightRequest" Value="18" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
 
-        <dxg:DataGridView.Columns>
-            <dxg:TextColumn   FieldName="Name"        Caption="Ürün Adı"/>
-            <dxg:TextColumn   FieldName="SKU"         Caption="SKU"/>
-            <dxg:NumberColumn FieldName="Price"       Caption="Fiyat (TL)" DisplayFormat="F2"/>
-            <dxg:DateColumn   FieldName="CreatedDate" Caption="Eklenme Tarihi" DisplayFormat="dd.MM.yyyy"/>
-        </dxg:DataGridView.Columns>
+        <!-- İskelette kaç satır çizileceği (8 satır) -->
+        <x:Array x:Key="SkeletonRows" Type="{x:Type x:Int32}">
+            <x:Int32>1</x:Int32>
+            <x:Int32>2</x:Int32>
+            <x:Int32>3</x:Int32>
+            <x:Int32>4</x:Int32>
+            <x:Int32>5</x:Int32>
+            <x:Int32>6</x:Int32>
+            <x:Int32>7</x:Int32>
+            <x:Int32>8</x:Int32>
+        </x:Array>
+    </ContentPage.Resources>
 
-    </dxg:DataGridView>
+    <dx:ShimmerView IsLoading="{Binding IsFirstLoading}"
+                    WaveWidth="0.7"
+                    WaveOpacity="0.8"
+                    WaveDuration="0:0:0.8"
+                    Margin="10,5">
+
+        <!-- Gerçek içerik: tablo -->
+        <dx:ShimmerView.Content>
+            <dxg:DataGridView ItemsSource="{Binding Products}"
+                              IsLoadMoreEnabled="{Binding IsLoadMoreEnabled}"
+                              LoadMoreCommand="{Binding LoadMoreCommand}"
+                              IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
+                              AutoGenerateColumnsMode="None"
+                              IsReadOnly="True">
+                <dxg:DataGridView.Columns>
+                    <dxg:TextColumn   FieldName="Name"        Caption="Ürün Adı"/>
+                    <dxg:TextColumn   FieldName="SKU"         Caption="SKU"/>
+                    <dxg:NumberColumn FieldName="Price"       Caption="Fiyat (TL)" DisplayFormat="F2"/>
+                    <dxg:DateColumn   FieldName="CreatedDate" Caption="Eklenme Tarihi" DisplayFormat="dd.MM.yyyy"/>
+                </dxg:DataGridView.Columns>
+            </dxg:DataGridView>
+        </dx:ShimmerView.Content>
+
+        <!-- Yüklenirken görünen iskelet -->
+        <dx:ShimmerView.LoadingView>
+            <VerticalStackLayout Padding="10" Spacing="16">
+
+                <!-- Sütun başlıklarının yerine geniş bir çubuk -->
+                <dx:DXBorder Style="{StaticResource SkeletonBar}" HeightRequest="26" />
+
+                <!-- 8 satır, her satırda 4 sütuna karşılık 4 çubuk -->
+                <VerticalStackLayout Spacing="16"
+                                     BindableLayout.ItemsSource="{StaticResource SkeletonRows}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="3*,2*,2*,2*" ColumnSpacing="12">
+                                <dx:DXBorder Grid.Column="0" Style="{StaticResource SkeletonBar}" />
+                                <dx:DXBorder Grid.Column="1" Style="{StaticResource SkeletonBar}" />
+                                <dx:DXBorder Grid.Column="2" Style="{StaticResource SkeletonBar}" />
+                                <dx:DXBorder Grid.Column="3" Style="{StaticResource SkeletonBar}" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </dx:ShimmerView.LoadingView>
+
+    </dx:ShimmerView>
 </ContentPage>

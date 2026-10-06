@@ -1,6 +1,7 @@
 ﻿using SM.MAUI.Services;
 using SM.Core.Models;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
 
 namespace SM.MAUI.ViewModels
@@ -11,53 +12,14 @@ namespace SM.MAUI.ViewModels
 
         #region Properties
 
-        private string _productName = string.Empty;
-        public string ProductName
-        {
-            get => _productName;
-            set => SetProperty(ref _productName, value);
-        }
-
-        private string _sku = string.Empty;
-        public string SKU
-        {
-            get => _sku;
-            set => SetProperty(ref _sku, value);
-        }
-
-        private string _price = string.Empty;
-        public string Price
-        {
-            get => _price;
-            set => SetProperty(ref _price, value);
-        }
-
-        private string _description = string.Empty;
-        public string Description
-        {
-            get => _description;
-            set => SetProperty(ref _description, value);
-        }
-
-        private string _initialStock = string.Empty;
-        public string InitialStock
-        {
-            get => _initialStock;
-            set => SetProperty(ref _initialStock, value);
-        }
+        // DataForm'un doldurduğu nesne (6 alanın hepsi burada)
+        public AddProductFormDto ProductForm { get; } = new();
 
         private ObservableCollection<WarehouseDisplayModel> _warehouses = new();
         public ObservableCollection<WarehouseDisplayModel> Warehouses
         {
             get => _warehouses;
             set => SetProperty(ref _warehouses, value);
-        }
-
-        private WarehouseDisplayModel? _selectedWarehouse;
-        public WarehouseDisplayModel? SelectedWarehouse
-        {
-            get => _selectedWarehouse;
-            set => SetProperty(ref _selectedWarehouse, value);
         }
 
         private bool _showPreview;
@@ -78,7 +40,6 @@ namespace SM.MAUI.ViewModels
 
         #region Commands
 
-        public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
         #endregion
@@ -88,7 +49,6 @@ namespace SM.MAUI.ViewModels
             _apiService = apiService;
             Title = "Ürün Ekle";
 
-            SaveCommand = new Command(async () => await SaveProduct());
             CancelCommand = new Command(async () => await Cancel());
 
             // Load warehouses when ViewModel is created
@@ -126,7 +86,8 @@ namespace SM.MAUI.ViewModels
             }
         }
 
-        private async Task SaveProduct()
+        // Code-behind, form geçerliyse bu metodu çağırır
+        public async Task SaveProductAsync()
         {
             if (IsLoading) return;
 
@@ -136,82 +97,47 @@ namespace SM.MAUI.ViewModels
                 ClearError();
                 SuccessMessage = string.Empty;
 
-                // Validation
-                if (string.IsNullOrWhiteSpace(ProductName))
-                {
-                    SetError("Ürün adı zorunludur!");
-                    return;
-                }
+                // Form doğrulandığı için WarehouseId burada dolu
+                int warehouseId = ProductForm.WarehouseId ?? 0;
+                int initialStock = ProductForm.InitialStock ?? 0;
 
-                if (string.IsNullOrWhiteSpace(SKU))
-                {
-                    SetError("SKU zorunludur!");
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(Price))
-                {
-                    SetError("Fiyat zorunludur!");
-                    return;
-                }
-
-                if (!decimal.TryParse(Price.Replace(',', '.'), out decimal priceValue) || priceValue <= 0)
-                {
-                    SetError("Geçerli bir fiyat girin!");
-                    return;
-                }
-
-                if (SelectedWarehouse == null)
-                {
-                    SetError("Depo seçimi zorunludur!");
-                    return;
-                }
-
-                // Validate initial stock if provided
-                int initialStockValue = 0;
-                if (!string.IsNullOrWhiteSpace(InitialStock))
-                {
-                    if (!int.TryParse(InitialStock, out initialStockValue) || initialStockValue < 0)
-                    {
-                        SetError("Geçerli bir başlangıç stok miktarı girin!");
-                        return;
-                    }
-                }
-
-                // Create product DTO
+                // 1) Formdaki bilgilerden API'nin beklediği ürün DTO'sunu hazırla
                 var productDto = new CreateProductDto
                 {
-                    Name = ProductName.Trim(),
-                    SKU = SKU.Trim().ToUpper(),
-                    Description = string.IsNullOrWhiteSpace(Description) ? null : Description.Trim(),
-                    Price = priceValue
+                    Name = ProductForm.Name.Trim(),
+                    SKU = ProductForm.SKU.Trim().ToUpper(),
+                    Description = string.IsNullOrWhiteSpace(ProductForm.Description)
+                        ? null
+                        : ProductForm.Description.Trim(),
+                    Price = ProductForm.Price
                 };
 
-                // Save product to API
                 var createdProduct = await _apiService.CreateProductAsync(productDto);
 
-                // If initial stock is provided, add stock to the selected warehouse
-                if (initialStockValue > 0)
+                // 2) Başlangıç stoğu girildiyse stok DTO'sunu hazırla ve gönder
+                if (initialStock > 0)
                 {
                     var stockDto = new StockOperationDto
                     {
                         ProductId = createdProduct.Id,
-                        WarehouseId = SelectedWarehouse.Id,
-                        Quantity = initialStockValue
+                        WarehouseId = warehouseId,
+                        Quantity = initialStock
                     };
 
                     await _apiService.StockInAsync(stockDto);
                 }
 
-                // Show success message
-                var successMsg = $"Ürün başarıyla eklendi!\n" +
-                               $"• Adı: {createdProduct.Name}\n" +
-                               $"• SKU: {createdProduct.SKU}\n" +
-                               $"• Depo: {SelectedWarehouse.Name}";
+                // 3) Başarı mesajı
+                var warehouseName = Warehouses.FirstOrDefault(w => w.Id == warehouseId)?.Name ?? "-";
 
-                if (initialStockValue > 0)
+                var successMsg = $"Ürün başarıyla eklendi!\n" +
+                                 $"• Adı: {createdProduct.Name}\n" +
+                                 $"• SKU: {createdProduct.SKU}\n" +
+                                 $"• Depo: {warehouseName}";
+
+                if (initialStock > 0)
                 {
-                    successMsg += $"\n• Başlangıç Stok: {initialStockValue} adet";
+                    successMsg += $"\n• Başlangıç Stok: {initialStock} adet";
                 }
 
                 await ShowSuccess(successMsg);
@@ -222,7 +148,6 @@ namespace SM.MAUI.ViewModels
             catch (Exception ex)
             {
                 await ShowError($"Ürün eklenirken hata oluştu: {ex.Message}");
-                SetError($"Ürün eklenirken hata oluştu: {ex.Message}");
             }
             finally
             {
@@ -246,6 +171,29 @@ namespace SM.MAUI.ViewModels
         public string Name { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
+    }
+
+    public class AddProductFormDto
+    {
+        [Required(ErrorMessage = "Ürün adı zorunludur!")]
+        [StringLength(100, ErrorMessage = "Ürün adı en fazla 100 karakter olabilir")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "SKU zorunludur!")]
+        [StringLength(50, ErrorMessage = "SKU en fazla 50 karakter olabilir")]
+        public string SKU { get; set; } = string.Empty;
+
+        [Range(0.01, double.MaxValue, ErrorMessage = "Fiyat 0'dan büyük olmalıdır!")]
+        public decimal Price { get; set; }
+
+        [Required(ErrorMessage = "Depo seçimi zorunludur!")]
+        public int? WarehouseId { get; set; }
+
+        [Range(0, int.MaxValue, ErrorMessage = "Başlangıç stoğu negatif olamaz!")]
+        public int? InitialStock { get; set; }
+
+        [StringLength(500, ErrorMessage = "Açıklama en fazla 500 karakter olabilir")]
+        public string? Description { get; set; }
     }
 
     #endregion

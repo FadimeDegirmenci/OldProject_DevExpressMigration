@@ -28,6 +28,13 @@ namespace SM.MAUI.ViewModels
             get => _isLoadMoreEnabled;
             set => SetProperty(ref _isLoadMoreEnabled, value);
         }
+        // Sadece ilk açılıştaki yüklemede true: iskelet (shimmer) görünür
+        private bool _isFirstLoading;
+        public bool IsFirstLoading
+        {
+            get => _isFirstLoading;
+            set => SetProperty(ref _isFirstLoading, value);
+        }
 
         public ICommand LoadMoreCommand { get; }
 
@@ -40,10 +47,20 @@ namespace SM.MAUI.ViewModels
         }
 
         // Sayfa açılınca ilk 20 ürünü yükler
+        // Sayfa açılınca ilk 20 ürünü yükler, bu sırada iskelet gösterilir
         public async Task LoadFirstPageAsync()
         {
             if (Products.Count > 0) return;
-            await LoadMoreAsync();
+
+            try
+            {
+                IsFirstLoading = true;
+                await LoadMoreAsync();
+            }
+            finally
+            {
+                IsFirstLoading = false;
+            }
         }
 
         // Sıradaki 20 ürünü getirip listenin sonuna ekler

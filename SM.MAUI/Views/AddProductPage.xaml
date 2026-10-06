@@ -2,6 +2,7 @@
 <ContentPage x:Class="SM.MAUI.Views.AddProductPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dx="http://schemas.devexpress.com/maui"
              Title="Ürün Ekleme Sayfası"
              BackgroundColor="#F0F2F5">
 
@@ -14,8 +15,8 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <Frame Grid.Row="0" 
-                   BackgroundColor="#667EEA" 
+            <Frame Grid.Row="0"
+                   BackgroundColor="#667EEA"
                    CornerRadius="15"
                    Margin="0,0,0,25"
                    Padding="25">
@@ -33,183 +34,55 @@
             <!-- Form -->
             <StackLayout Grid.Row="1" Spacing="20">
 
-                <!-- Ürün Adı -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="12" 
-                       Padding="20"
-                       BorderColor="#E3F2FD">
-                    <StackLayout Spacing="12">
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="🏷️" FontSize="18" VerticalOptions="Center" />
-                            <Label Text="Ürün Adı *" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#2E3A59"
-                                   FontSize="16"
-                                   VerticalOptions="Center"
-                                   Margin="8,0,0,0" />
-                        </StackLayout>
-                        <Entry Text="{Binding ProductName}" 
-                               Placeholder="Ürün adını girin"
-                               BackgroundColor="#F8FAFC"
-                               TextColor="#2E3A59"
-                               FontSize="15"
-                               HeightRequest="45" />
-                    </StackLayout>
-                </Frame>
+                <Frame BackgroundColor="White"
+                       CornerRadius="12"
+                       Padding="10">
 
-                <!-- SKU -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="12" 
-                       Padding="20"
-                       BorderColor="#FFF3E0">
-                    <StackLayout Spacing="12">
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="📋" FontSize="18" VerticalOptions="Center" />
-                            <Label Text="SKU (Stok Kodu) *" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#2E3A59"
-                                   FontSize="16"
-                                   VerticalOptions="Center"
-                                   Margin="8,0,0,0" />
-                        </StackLayout>
-                        <Entry Text="{Binding SKU}" 
-                               Placeholder="Benzersiz stok kodu"
-                               BackgroundColor="#FFF8F3"
-                               TextColor="#2E3A59"
-                               FontSize="15"
-                               HeightRequest="45" />
-                    </StackLayout>
-                </Frame>
+                    <dx:DataFormView x:Name="dataForm"
+                                     DataObject="{Binding ProductForm}"
+                                     CommitMode="Manually"
+                                     ValidationMode="Input"
+                                     ReserveBottomTextLine="True"
+                                     BackgroundColor="Transparent">
 
-                <!-- Fiyat -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="12" 
-                       Padding="20"
-                       BorderColor="#E8F5E8">
-                    <StackLayout Spacing="12">
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="💰" FontSize="18" VerticalOptions="Center" />
-                            <Label Text="Satış Fiyatı *" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#2E3A59"
-                                   FontSize="16"
-                                   VerticalOptions="Center"
-                                   Margin="8,0,0,0" />
-                        </StackLayout>
-                        <Entry Text="{Binding Price}" 
-                               Placeholder="Fiyat (örn: 25000,50)"
-                               Keyboard="Numeric"
-                               BackgroundColor="#F8FFF8"
-                               TextColor="#2E3A59"
-                               FontSize="15"
-                               HeightRequest="45" />
-                    </StackLayout>
-                </Frame>
+                        <dx:DataFormTextItem FieldName="Name"
+                                             LabelText="Ürün Adı *"
+                                             Placeholder="Ürün adını girin" />
 
-                <!-- Depo Seçimi -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="12" 
-                       Padding="20"
-                       BorderColor="#F3E5F5">
-                    <StackLayout Spacing="12">
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="🏪" FontSize="18" VerticalOptions="Center" />
-                            <Label Text="Depo *" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#2E3A59"
-                                   FontSize="16"
-                                   VerticalOptions="Center"
-                                   Margin="8,0,0,0" />
-                        </StackLayout>
-                        <Picker ItemsSource="{Binding Warehouses}"
-                                ItemDisplayBinding="{Binding DisplayName}"
-                                SelectedItem="{Binding SelectedWarehouse}"
-                                Title="Depo seçin"
-                                BackgroundColor="#FAF5FF"
-                                TextColor="#2E3A59"
-                                FontSize="15"
-                                HeightRequest="45" />
-                    </StackLayout>
-                </Frame>
+                        <dx:DataFormTextItem FieldName="SKU"
+                                             LabelText="SKU (Stok Kodu) *"
+                                             Placeholder="Benzersiz stok kodu" />
 
-                <!-- Başlangıç Stok Miktarı -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="12" 
-                       Padding="20"
-                       BorderColor="#FFF9C4">
-                    <StackLayout Spacing="12">
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="📊" FontSize="18" VerticalOptions="Center" />
-                            <Label Text="Başlangıç Stok Miktarı" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#2E3A59"
-                                   FontSize="16"
-                                   VerticalOptions="Center"
-                                   Margin="8,0,0,0" />
-                        </StackLayout>
-                        <Entry Text="{Binding InitialStock}" 
-                               Placeholder="Başlangıç stok (opsiyonel)"
-                               Keyboard="Numeric"
-                               BackgroundColor="#FFFEF7"
-                               TextColor="#2E3A59"
-                               FontSize="15"
-                               HeightRequest="45" />
-                    </StackLayout>
-                </Frame>
+                        <dx:DataFormNumericItem FieldName="Price"
+                                                LabelText="Satış Fiyatı *"
+                                                Placeholder="Fiyat" />
 
-                <!-- Açıklama -->
-                <Frame BackgroundColor="White" 
-                       CornerRadius="12" 
-                       Padding="20"
-                       BorderColor="#E1F5FE">
-                    <StackLayout Spacing="12">
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="📝" FontSize="18" VerticalOptions="Center" />
-                            <Label Text="Ürün Açıklaması" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#2E3A59"
-                                   FontSize="16"
-                                   VerticalOptions="Center"
-                                   Margin="8,0,0,0" />
-                        </StackLayout>
-                        <Editor Text="{Binding Description}" 
-                                Placeholder="Ürün hakkında açıklama..."
-                                HeightRequest="100"
-                                BackgroundColor="#F0FDFF"
-                                TextColor="#2E3A59"
-                                FontSize="15" />
-                    </StackLayout>
-                </Frame>
+                        <dx:DataFormComboBoxItem FieldName="WarehouseId"
+                                                 LabelText="Depo *"
+                                                 Placeholder="Depo seçin"
+                                                 ItemsSource="{Binding Warehouses}"
+                                                 DisplayMember="DisplayName"
+                                                 ValueMember="Id" />
 
-                <!-- Error Message -->
-                <Frame BackgroundColor="#FFEBEE" 
-                       CornerRadius="12" 
-                       Padding="20"
-                       BorderColor="#FFCDD2"
-                       IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}">
-                    <StackLayout Orientation="Horizontal" Spacing="15">
-                        <Label Text="⚠️" 
-                               FontSize="20" 
-                               VerticalOptions="Center" />
-                        <Label Text="{Binding ErrorMessage}"
-                               TextColor="#C62828"
-                               FontSize="15"
-                               FontAttributes="Bold"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Fill" />
-                    </StackLayout>
+                        <dx:DataFormNumericItem FieldName="InitialStock"
+                                                LabelText="Başlangıç Stok Miktarı"
+                                                Placeholder="Opsiyonel" />
+
+                        <dx:DataFormMultilineItem FieldName="Description"
+                                                  LabelText="Ürün Açıklaması"
+                                                  Placeholder="Ürün hakkında açıklama..."
+                                                  MinLineCount="3" />
+                    </dx:DataFormView>
                 </Frame>
 
                 <!-- Success Message -->
-                <Frame BackgroundColor="#E8F5E8" 
-                       CornerRadius="12" 
+                <Frame BackgroundColor="#E8F5E8"
+                       CornerRadius="12"
                        Padding="20"
                        BorderColor="#C8E6C9"
                        IsVisible="{Binding SuccessMessage, Converter={StaticResource StringToBoolConverter}}">
                     <StackLayout Orientation="Horizontal" Spacing="15">
-                        <Label Text="✅" 
-                               FontSize="20" 
-                               VerticalOptions="Center" />
+                        <Label Text="✅" FontSize="20" VerticalOptions="Center" />
                         <Label Text="{Binding SuccessMessage}"
                                TextColor="#2E7D32"
                                FontSize="15"
@@ -248,7 +121,7 @@
                         Margin="10,0,0,0"
                         FontSize="17"
                         FontAttributes="Bold"
-                        Command="{Binding SaveCommand}"
+                        Clicked="OnSaveClicked"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" />
             </Grid>
 
@@ -262,10 +135,10 @@
                    Padding="40">
                 <StackLayout Spacing="20" HorizontalOptions="Center">
                     <ActivityIndicator IsVisible="{Binding IsLoading}"
-                                      IsRunning="{Binding IsLoading}"
-                                      Color="#667EEA"
-                                      WidthRequest="50"
-                                      HeightRequest="50" />
+                                       IsRunning="{Binding IsLoading}"
+                                       Color="#667EEA"
+                                       WidthRequest="50"
+                                       HeightRequest="50" />
                     <Label Text="Ürün kaydediliyor..."
                            TextColor="#2E3A59"
                            FontSize="16"

@@ -9,16 +9,17 @@ namespace SM.MAUI.Views
         public AddProductPage(AddProductViewModel viewModel)
         {
             InitializeComponent();
-            _viewModel = viewModel;
-            BindingContext = _viewModel;
+            BindingContext = _viewModel = viewModel;
         }
 
-        protected override async void OnAppearing()
+        private async void OnSaveClicked(object sender, EventArgs e)
         {
-            base.OnAppearing();
+            dataForm.Commit();              // 1) kutulardaki deðerleri ProductForm'a aktar
 
-            // ViewModel'deki LoadWarehouses metodu constructor'da çaðrýlýyor
-            
+            if (!dataForm.Validate())       // 2) kurallara uymayan alan var mý?
+                return;                     //    varsa hatalarý göster, kaydetme
+
+            await _viewModel.SaveProductAsync();   // 3) geçerliyse kaydet
         }
     }
 }
