@@ -12,6 +12,12 @@ namespace SM.MAUI.Views
         {
             InitializeComponent();
             BindingContext = _viewModel = viewModel;
+
+            // Yönetici değilse kaydırınca çıkan Sil butonunu kaldır
+            if (!_viewModel.IsAdmin)
+            {
+                productGrid.EndSwipeItems.Clear();
+            }
         }
 
         protected override async void OnAppearing()

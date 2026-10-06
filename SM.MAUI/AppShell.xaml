@@ -4,8 +4,17 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SM.MAUI"
-    Title="SM.MAUI">
+    xmlns:views="clr-namespace:SM.MAUI.Views"
+    Title="SM.MAUI"
+    FlyoutBehavior="Disabled">
 
+    <!-- 1) Uygulama açılınca ilk bu gelir -->
+    <ShellContent
+        Title="Giriş"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Route="LoginPage" />
+
+    <!-- 2) Giriş başarılı olunca buraya geçilir (//MainPage) -->
     <TabBar>
         <ShellContent
             Title="Ana Sayfa"

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SM.MAUI.Views.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F0F2F5">
+
+    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+
+        <Label Text="📦 Stokify"
+               FontSize="32"
+               FontAttributes="Bold"
+               TextColor="#2E86AB"
+               HorizontalOptions="Center" />
+
+        <Label Text="Devam etmek için giriş yapın"
+               FontSize="16"
+               TextColor="#6C757D"
+               HorizontalOptions="Center" />
+
+        <Entry Text="{Binding Username}"
+               Placeholder="Kullanıcı adı"
+               Keyboard="Plain"
+               IsSpellCheckEnabled="False"
+               IsTextPredictionEnabled="False" />
+
+        <Entry Text="{Binding Password}"
+               Placeholder="Şifre"
+               IsPassword="True" />
+
+        <Label Text="{Binding ErrorMessage}"
+               TextColor="#DC3545"
+               IsVisible="{Binding HasError}"
+               HorizontalOptions="Center" />
+
+        <Button Text="Giriş Yap"
+                Command="{Binding LoginCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                BackgroundColor="#2E86AB"
+                TextColor="White"
+                CornerRadius="8"
+                HeightRequest="50" />
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="#2E86AB" />
+
+    </VerticalStackLayout>
+</ContentPage>

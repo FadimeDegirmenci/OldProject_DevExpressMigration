@@ -45,7 +45,8 @@ public static class MauiProgram
         builder.Services.AddTransient<EditWarehousePage>();
         builder.Services.AddTransient<WarehouseDetailPage>();
         builder.Services.AddTransient<ProductLoadMorePage>();
-        
+        builder.Services.AddSingleton<SessionService>();
+        builder.Services.AddTransient<LoginPage>();
 
         // ViewModels
         builder.Services.AddTransient<ProductListViewModel>();
@@ -59,6 +60,7 @@ public static class MauiProgram
         builder.Services.AddTransient<EditWarehouseViewModel>();
         builder.Services.AddTransient<WarehouseDetailViewModel>();
         builder.Services.AddTransient<ProductLoadMoreViewModel>();
+        builder.Services.AddTransient<LoginViewModel>();
 #if DEBUG
         builder.Services.AddLogging(configure => configure.AddDebug());
 #endif

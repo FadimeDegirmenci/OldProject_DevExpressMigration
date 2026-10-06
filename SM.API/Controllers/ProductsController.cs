@@ -3,11 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using SM.API.Data;
 using SM.Core.Models;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SM.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly SMDbContext _context;
@@ -194,6 +196,7 @@ namespace SM.API.Controllers
 
         // DELETE: api/products/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Yonetici")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             try

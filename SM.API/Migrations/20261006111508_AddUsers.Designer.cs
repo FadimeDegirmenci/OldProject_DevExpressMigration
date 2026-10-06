@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SM.API.Data;
 
@@ -10,9 +11,11 @@ using SM.API.Data;
 namespace SM.API.Migrations
 {
     [DbContext(typeof(SMDbContext))]
-    partial class SMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261006111508_AddUsers")]
+    partial class AddUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
@@ -105,22 +108,6 @@ namespace SM.API.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            PasswordHash = "AQAAAAIAAYagAAAAEClKbWHhNAcQjaJijzxVSOd1/9lnh4abMxw7Kzupf5A1GS8Hx59dRq6yVCSGnNEAmA==",
-                            Role = "Yonetici",
-                            Username = "yonetici"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            PasswordHash = "AQAAAAIAAYagAAAAEJACifbWB7xxH9Hw7eT+VtQre3eA/Y97S3a/BjRPdCSIXAsJ0OvtZlM+TtW3MHPDIA==",
-                            Role = "DepoSorumlusu",
-                            Username = "depo"
-                        });
                 });
 
             modelBuilder.Entity("SM.Core.Models.Warehouse", b =>

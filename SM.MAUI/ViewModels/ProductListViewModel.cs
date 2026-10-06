@@ -20,6 +20,7 @@ namespace SM.MAUI.ViewModels
     public partial class ProductListViewModel : BaseViewModel
     {
         private readonly ApiService _apiService;
+        private readonly SessionService _sessionService;
         private ObservableCollection<Product> _products = new();
 
         public ObservableCollection<Product> Products
@@ -27,21 +28,24 @@ namespace SM.MAUI.ViewModels
             get => _products;
             set => SetProperty(ref _products, value);
         }
-
+        // Giriş yapan kullanıcı Yönetici mi?
+        public bool IsAdmin => _sessionService.IsAdmin;
         public ICommand RefreshCommand { get; }
         public ICommand AddProductCommand { get; }
         public ICommand DeleteProductCommand { get; }
         public ICommand ProductTappedCommand { get; }
 
-        public ProductListViewModel(ApiService apiService)
+        public ProductListViewModel(ApiService apiService, SessionService sessionService)
         {
             _apiService = apiService;
+            _sessionService = sessionService;
             Title = "Ürün Listesi";
 
             RefreshCommand = new Command(async () => await LoadProductsAsync());
             AddProductCommand = new Command(async () => await AddProduct());
             DeleteProductCommand = new Command<Product>(async (product) => await DeleteProduct(product));
             ProductTappedCommand = new Command<Product>(async (product) => await OnProductTapped(product));
+            _sessionService = sessionService;
         }
 
         public async Task LoadProductsAsync()

@@ -2,6 +2,8 @@
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace SM.MAUI.Services
 {
@@ -31,7 +33,47 @@ _httpClient.BaseAddress = new Uri("http://localhost:5000/");
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
         }
+        #region Auth Operations
 
+        public async Task<LoginResponseDto> LoginAsync(string username, string password)
+        {
+            var request = new LoginRequestDto { Username = username, Password = password };
+            var jsonContent = JsonSerializer.Serialize(request, _jsonOptions);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await _httpClient.PostAsync("api/auth/login", content);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new Exception($"Ağ hatası: {ex.Message}");
+            }
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new Exception("Kullanıcı adı veya şifre hatalı.");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API Hatası: {response.StatusCode} - {errorContent}");
+            }
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<LoginResponseDto>(responseJson, _jsonOptions)
+                         ?? throw new Exception("Giriş cevabı okunamadı.");
+
+            // Bundan sonraki bütün isteklere token'ı ekle
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", result.Token);
+
+            return result;
+        }
+
+        #endregion
         #region Product Operations
 
         public async Task<List<Product>> GetProductsAsync()
@@ -730,6 +772,18 @@ _httpClient.BaseAddress = new Uri("http://localhost:5000/");
         public int TotalQuantity { get; set; }
         public decimal TotalValue { get; set; }
     }
+    public class LoginRequestDto
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
 
+    public class LoginResponseDto
+    {
+        public string Token { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+        public DateTime ExpiresAt { get; set; }
+    }
     #endregion
 }
